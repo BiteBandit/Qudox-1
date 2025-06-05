@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Referral Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #111;
+      color: #eee;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+
+    h1 {
+      margin-bottom: 0.2rem;
+      color: #00ff99;
+      animation: glitch 1s infinite;
+    }
+
+    p.motivation {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: #a0ffa0;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    #referralLink {
+      font-weight: bold;
+      background: #222;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      user-select: all;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      animation: glitch 1s infinite;
+    }
+
+    button {
+      background: #00ff99;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #111;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 0 8px #00ff99;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background: #00cc77;
+    }
+
+    #statusMessage {
+      height: 1.4rem;
+      color: #0f0;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      text-align: center;
+      min-width: 200px;
+    }
+
+    #referralsCount {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #00ffcc;
+      animation: glitch 1s infinite;
+    }
+
+    /* 🔥 Glitch Animation (Your Style) */
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 red, -2px 0 blue; }
+      20% { text-shadow: -2px 2px red, 2px -2px blue; }
+      40% { text-shadow: 2px -2px red, -2px 2px blue; }
+      60% { text-shadow: -2px -2px red, 2px 2px blue; }
+      80% { text-shadow: 2px 2px red, -2px -2px blue; }
+      100% { text-shadow: -2px 0 red, 2px 0 blue; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Your Referral Link</h1>
+  <p class="motivation">Refer your friends and earn ₦700 for each successful referral!</p>
+
+<div id="referralLink" title="Click to copy referral link">Loading...</div>
+  <button id="copyBtn">Copy Referral Link</button>
+  <div id="statusMessage"></div>
+
+  <div>
+    <span>Successful Referrals: </span><span id="referralsCount">0</span>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      // Your Firebase config goes here
+      apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
+    authDomain: "qudox-c4ffe.firebaseapp.com",
+    projectId: "qudox-c4ffe",
+    storageBucket: "qudox-c4ffe.appspot.com",
+    messagingSenderId: "499837322901",
+    appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const referralLinkEl = document.getElementById("referralLink");
+    const copyBtn = document.getElementById("copyBtn");
+    const statusMessageEl = document.getElementById("statusMessage");
+    const referralsCountEl = document.getElementById("referralsCount");
+
+    let referralLink = "";
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      referralLink = `${window.location.origin}/?ref=${user.uid}`;
+      referralLinkEl.textContent = referralLink;
+
+      try {
+        const q = query(collection(db, "users"), where("referrerId", "==", user.uid));
+        const querySnapshot = await getDocs(q);
+        referralsCountEl.textContent = querySnapshot.size;
+      } catch (error) {
+        console.error("Error fetching referrals:", error);
+      }
+    });
+
+    copyBtn.addEventListener("click", () => {
+      if (!referralLink) return;
+
+      navigator.clipboard.writeText(referralLink).then(() => {
+        statusMessageEl.textContent = "Referral link copied! 🎉";
+        setTimeout(() => {
+          statusMessageEl.textContent = "";
+        }, 2000);
+      }).catch(() => {
+        statusMessageEl.textContent = "Failed to copy referral link.";
+      });
+    });
+  </script>
+</body>
+</html>

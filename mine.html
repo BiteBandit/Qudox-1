@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Naira Coin Mining</title>
+  <style>
+    body {
+      background: black;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 20px;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    h1.glitch {
+      font-size: 2.5em;
+      position: relative;
+      color: white;
+      animation: glitch 1s infinite;
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 2px 2px red; }
+      25% { text-shadow: -2px -2px lime; }
+      50% { text-shadow: 2px -2px blue; }
+      75% { text-shadow: -2px 2px yellow; }
+      100% { text-shadow: 2px 2px red; }
+    }
+
+    #coin {
+      width: 150px;
+      cursor: pointer;
+      margin-top: 30px;
+      transition: transform 0.2s;
+      filter: drop-shadow(0 0 5px #00ffcc);
+    }
+
+    #coin:active {
+      transform: scale(1.1);
+    }
+
+    .amount {
+      font-size: 1.4em;
+      margin: 20px 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      background: #00ffcc;
+      color: black;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ffcc;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    button:hover {
+      background: #00ffaa;
+    }
+
+    /* Glitch effect on claim button */
+    button.glitch-btn {
+      animation: glitchBtn 1s infinite;
+    }
+
+    @keyframes glitchBtn {
+      0% {
+        text-shadow: 1px 0 red;
+      }
+      20% {
+        text-shadow: -1px 0 lime;
+      }
+      40% {
+        text-shadow: 1px 0 blue;
+      }
+      60% {
+        text-shadow: -1px 0 yellow;
+      }
+      80% {
+        text-shadow: 1px 0 cyan;
+      }
+      100% {
+        text-shadow: 1px 0 red;
+      }
+    }
+
+    .back-btn {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      background: transparent;
+      border: 1px solid #00ffcc;
+      color: #00ffcc;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      user-select: none;
+      z-index: 1000;
+    }
+
+    .back-btn:hover {
+      background: #00ffcc;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="window.location.href='dashboard.html'">⬅ Back</button>
+  <h1 class="glitch">Naira Coin Mining</h1>
+
+  <img id="coin" src="https://i.postimg.cc/zB2R0wsF/naira-coin-circular.png" alt="Naira Coin" />
+
+  <p class="amount">Mined: <span id="minedAmount">₦0</span></p>
+  <button id="claimBtn" class="glitch-btn" onclick="claimCoins()">Claim Coins</button>
+
+  <p id="claimStatus" style="margin-top: 10px; color: lightgreen;"></p>
+
+  <audio id="coinSound" preload="auto" src="https://assets.mixkit.co/sfx/download/mixkit-coin-win-notification-1992.wav"></audio>
+
+  <!-- Firebase SDKs -->
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
+    authDomain: "qudox-c4ffe.firebaseapp.com",
+    projectId: "qudox-c4ffe",
+    storageBucket: "qudox-c4ffe.appspot.com",
+    messagingSenderId: "499837322901",
+    appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+let currentUser = null;
+let mined = 0;
+let minedToday = 0;
+const DAILY_LIMIT = 10000;
+
+const minedDisplay = document.getElementById("minedAmount");
+const coin = document.getElementById("coin");
+const coinSound = document.getElementById("coinSound");
+const claimStatus = document.getElementById("claimStatus");
+
+// ⏰ Get time until midnight for cooldown
+function getCooldownTime() {
+  const now = new Date();
+  const midnight = new Date();
+  midnight.setHours(24, 0, 0, 0);
+  const diff = midnight - now;
+
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  return `${hours}h ${minutes}m`;
+}
+
+// 🔄 Reset minedToday automatically at midnight (when page is refreshed)
+function checkDateReset() {
+  const today = new Date().toDateString();
+  const lastDate = localStorage.getItem("lastMineDate");
+  if (lastDate !== today) {
+    minedToday = 0;
+    localStorage.setItem("lastMineDate", today);
+  }
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
+    checkDateReset(); // Reset minedToday if it's a new day
+
+    // Check if user doc exists, if not create with balance=0
+    const userRef = doc(db, "users", currentUser.uid);
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) {
+      await setDoc(userRef, { balance: 0 });
+    }
+
+  } else {
+    window.location.href = "login.html"; // Redirect if not logged in
+  }
+});
+
+coin.addEventListener("click", () => {
+  if (minedToday >= DAILY_LIMIT) {
+    const cooldown = getCooldownTime();
+    claimStatus.style.color = "orange";
+    claimStatus.textContent = `⛔ Daily limit reached! Come back in ${cooldown}`;
+    return;
+  }
+
+  mined += 30;
+  minedToday += 30;
+  minedDisplay.textContent = `₦${mined.toLocaleString()}`;
+  coinSound.currentTime = 0;
+  coinSound.play();
+});
+
+// ✅ Optional: Live countdown update every 1 minute
+setInterval(() => {
+  if (minedToday >= DAILY_LIMIT) {
+    const cooldown = getCooldownTime();
+    claimStatus.textContent = `⛔ Daily limit reached! Come back in ${cooldown}`;
+  }
+}, 60000);
+
+window.claimCoins = async function () {
+  if (!currentUser) {
+    claimStatus.style.color = "red";
+    claimStatus.textContent = "⛔ You must be logged in to claim!";
+    return;
+  }
+
+  if (mined === 0) {
+    claimStatus.style.color = "red";
+    claimStatus.textContent = "⛔ You haven't mined anything yet!";
+    return;
+  }
+
+  try {
+    const userRef = doc(db, "users", currentUser.uid);
+    const userSnap = await getDoc(userRef);
+    let currentBalance = 0;
+
+    if (userSnap.exists()) {
+      currentBalance = userSnap.data().balance || 0;
+    } else {
+      await setDoc(userRef, { balance: 0 });
+      currentBalance = 0;
+    }
+
+    const newBalance = currentBalance + mined;
+    await updateDoc(userRef, { balance: newBalance });
+
+    claimStatus.style.color = "lightgreen";
+    claimStatus.textContent = `✅ Claimed ₦${mined.toLocaleString()}! New balance: ₦${newBalance.toLocaleString()}`;
+    mined = 0;
+    minedDisplay.textContent = "₦0";
+  } catch (e) {
+    console.error("Claim error:", e);
+    claimStatus.style.color = "red";
+    claimStatus.textContent = "❌ Claim failed. Try again.";
+  }
+};
+</script>
+  </script>
+</body>
+</html>

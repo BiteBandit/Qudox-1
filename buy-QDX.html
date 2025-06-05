@@ -1,0 +1,136 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buy QDX Code</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <script type="module">
+    // Firebase SDK imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";const firebaseConfig = {
+  apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
+    authDomain: "qudox-c4ffe.firebaseapp.com",
+    projectId: "qudox-c4ffe",
+    storageBucket: "qudox-c4ffe.appspot.com",
+    messagingSenderId: "499837322901",
+    appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
+  };
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const fullNameEl = document.getElementById("full-name");
+const emailEl = document.getElementById("email");
+
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
+      fullNameEl.value = userData.username || "";
+      emailEl.value = userData.email || "";
+    }
+  } else {
+    alert("Please login to continue");
+    window.location.href = "/login.html";
+  }
+});
+
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Share Tech Mono', monospace;
+      background: #0e0e0e;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .form-wrapper {
+      background: #111;
+      padding: 30px 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #00ffea88, 0 0 20px #00ffea22;
+      width: 100%;
+      max-width: 400px;
+    }
+    .glitch {
+      font-size: 24px;
+      color: #00ffea;
+      text-align: center;
+      margin-bottom: 20px;
+      animation: glitch 1s infinite;
+    }
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 red, -2px 0 blue; }
+      20% { text-shadow: -2px 2px red, 2px -2px blue; }
+      40% { text-shadow: 2px -2px red, -2px 2px blue; }
+      60% { text-shadow: -2px -2px red, 2px 2px blue; }
+      80% { text-shadow: 2px 2px red, -2px -2px blue; }
+      100% { text-shadow: -2px 0 red, 2px 0 blue; }
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background: #1a1a1a;
+      color: #00ffea;
+      font-size: 1rem;
+    }
+    input:disabled {
+      opacity: 0.6;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background-color: #00bfff;
+      color: #000;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 15px;
+      animation: glitch 1s infinite;
+    }
+    button:hover {
+      background-color: #00a6e6;
+    }
+    @media (max-width: 480px) {
+      .form-wrapper {
+        padding: 20px;
+      }
+      .glitch {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-wrapper">
+    <div class="glitch">Buy BPC Code</div>
+    <form>
+      <label for="amount">Amount (₦)</label>
+      <input type="text" id="amount" value="5000" disabled /><label for="full-name">Full Name</label>
+  <input type="text" id="full-name" disabled />
+
+  <label for="email">Email</label>
+  <input type="text" id="email" disabled />
+
+  <button type="button">Pay</button>
+</form>
+
+  </div>
+</body>
+</html>

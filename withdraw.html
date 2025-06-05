@@ -1,0 +1,213 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bank Transfer</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: #0e0e0e;
+      font-family: 'Share Tech Mono', monospace;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background: #111;
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 15px #00ffea88, 0 0 40px #00ffea22;
+    }
+    h2.glitch {
+      font-size: 24px;
+      text-align: center;
+      color: #00ffea;
+      animation: glitch 1s infinite;
+    }
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 red, -2px 0 blue; }
+      20% { text-shadow: -2px 2px red, 2px -2px blue; }
+      40% { text-shadow: 2px -2px red, -2px 2px blue; }
+      60% { text-shadow: -2px -2px red, 2px 2px blue; }
+      80% { text-shadow: 2px 2px red, -2px -2px blue; }
+      100% { text-shadow: -2px 0 red, 2px 0 blue; }
+    }
+    label {
+      margin-top: 15px;
+      display: block;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      background: #1a1a1a;
+      border: 1px solid #00ffea66;
+      border-radius: 5px;
+      color: #ffffff;
+      margin-top: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #00ffea;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+      animation: glitch 1s infinite;
+    }
+    .balance-display {
+      background: #1f1f1f;
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 18px;
+      color: #00ffea;
+    }
+    .error {
+      color: #ff4c4c;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    .success {
+      color: #00ffaa;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2 class="glitch">Bank Transfer</h2>
+  <div class="balance-display" id="balanceDisplay">Balance: ₦0</div><label for="bank">Select Bank</label> <select id="bank"> <option value="">-- Choose Bank --</option> <option value="Access Bank">Access Bank</option> <option value="GTBank">GTBank</option> <option value="UBA">UBA</option> <option value="First Bank">First Bank</option> <option value="Zenith Bank">Zenith Bank</option> <option value="Kuda">Kuda</option> <option value="Opay">Opay</option> <option value="Chipper">Chipper</option> <!-- Add more banks as needed --> </select>
+
+<label for="accountNumber">Account Number</label> <input type="text" id="accountNumber" placeholder="Enter account number" />
+
+<label for="accountname">Account Name</label> <input type="text" id="accountnumber" placeholder="Enter account name" />
+
+<label for="amount">Amount (₦)</label> <input type="number" id="amount" placeholder="Enter amount" />
+
+<label for="bpc">BPC Code</label>
+<input type="password" id="bpc" placeholder="Enter BPC code" />
+
+<button onclick="submitTransfer()">Submit Transfer</button>
+
+  <div class="error" id="errorMsg"></div>
+  <div class="success" id="successMsg"></div>
+</div><script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
+    authDomain: "qudox-c4ffe.firebaseapp.com",
+    projectId: "qudox-c4ffe",
+    storageBucket: "qudox-c4ffe.appspot.com",
+    messagingSenderId: "499837322901",
+    appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser;
+let currentBalance = 0;
+
+// Monitor user auth state and fetch balance
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+    if (userSnap.exists()) {
+      currentBalance = userSnap.data().balance || 0;
+      document.getElementById("balanceDisplay").textContent = `Balance: ₦${currentBalance.toLocaleString()}`;
+    }
+  }
+});
+
+window.submitTransfer = async function () {
+  const bank = document.getElementById("bank").value.trim();
+  const accountNumber = document.getElementById("accountNumber").value.trim();
+  const amount = parseInt(document.getElementById("amount").value.trim());
+  const bpcCode = document.getElementById("bpc").value.trim();
+
+  const error = document.getElementById("errorMsg");
+  const success = document.getElementById("successMsg");
+  error.textContent = "";
+  success.textContent = "";
+
+  const correctBPC = "BPC8421";
+
+  if (!bank || !accountNumber || isNaN(amount) || !bpcCode) {
+    error.textContent = "All fields including BPC code are required.";
+    return;
+  }
+
+  if (bpcCode !== correctBPC) {
+    error.textContent = "Invalid BPC code.";
+    return;
+  }
+
+  if (amount < 30000) {
+    error.textContent = "Minimum withdrawal is ₦30,000.";
+    return;
+  }
+
+  if (amount > 2000000) {
+    error.textContent = "Maximum withdrawal is ₦2,000,000.";
+    return;
+  }
+
+  if (!currentUser) {
+    error.textContent = "User not logged in.";
+    return;
+  }
+
+  if (amount > currentBalance) {
+    error.textContent = "Insufficient balance.";
+    return;
+  }
+
+  try {
+    // Step 1: Update balance
+    const newBalance = currentBalance - amount;
+    const userRef = doc(db, "users", currentUser.uid);
+    await updateDoc(userRef, {
+      balance: newBalance
+    });
+    document.getElementById("balanceDisplay").textContent = `Balance: ₦${newBalance.toLocaleString()}`;
+    currentBalance = newBalance;
+
+    // Step 2: Log transaction
+    await addDoc(collection(db, "users", currentUser.uid, "transactions"), {
+      type: "Bank Transfer",
+      amount: amount,
+      bank: bank,
+      accountNumber: accountNumber,
+      timestamp: serverTimestamp()
+    });
+
+    success.textContent = "Transfer submitted successfully.";
+    console.log("✅ Transfer completed and logged.");
+  } catch (e) {
+    console.error("❌ Error during transfer:", e);
+    error.textContent = "Transfer failed. But if your balance was deducted, contact support.";
+  }
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Buy Data Bundle</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    body {
+      background-color: #0d0d0d;
+      color: white;
+      padding: 20px;
+    }
+
+    .form-container {
+      background: #1a1a1a;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px #00ffcc55;
+      max-width: 500px;
+      margin: auto;
+      position: relative;
+    }
+
+    .glitch-text {
+      position: relative;
+      color: #00ffff;
+      font-size: 26px;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .glitch-text::before,
+    .glitch-text::after {
+      content: attr(data-glitch);
+      position: absolute;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      color: #007BFF;
+    }
+
+    .glitch-text::before {
+      animation: glitchTop 2s infinite linear;
+      top: -2px;
+      color: #ff00c8;
+    }
+
+    .glitch-text::after {
+      animation: glitchBottom 2s infinite linear;
+      top: 2px;
+      color: blue;
+    }
+
+    @keyframes glitchTop {
+      0% { clip-path: inset(0 0 85% 0); }
+      20% { clip-path: inset(0 0 25% 0); transform: translateX(-2px); }
+      40% { clip-path: inset(0 0 60% 0); transform: translateX(2px); }
+      60% { clip-path: inset(0 0 35% 0); }
+      80% { clip-path: inset(0 0 85% 0); transform: translateX(-1px); }
+      100% { clip-path: inset(0 0 45% 0); }
+    }
+
+    @keyframes glitchBottom {
+      0% { clip-path: inset(85% 0 0 0); }
+      20% { clip-path: inset(25% 0 0 0); transform: translateX(2px); }
+      40% { clip-path: inset(60% 0 0 0); transform: translateX(-2px); }
+      60% { clip-path: inset(35% 0 0 0); }
+      80% { clip-path: inset(85% 0 0 0); transform: translateX(1px); }
+      100% { clip-path: inset(45% 0 0 0); }
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    select, input {
+      background: #111;
+      border: 1px solid #333;
+      color: white;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    select:focus, input:focus {
+      border-color: #00ffff;
+      outline: none;
+    }
+
+    .glitch-btn {
+      background-color: #00ffff;
+      color: #00ffff;
+      border: none;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .glitch-btn-text::before,
+    .glitch-btn-text::after {
+      content: attr(data-glitch);
+      position: absolute;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .glitch-btn-text::before {
+      top: -2px;
+      color: #ff00c8;
+      animation: glitchTop 1.5s infinite linear;
+    }
+
+    .glitch-btn-text::after {
+      top: 2px;
+      color: #00ff;
+      animation: glitchBottom 1.5s infinite linear;
+    }
+
+    .glitch-btn-text {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Base back button styles, no border/background */
+.back-btn {
+  margin-bottom: 20px;
+  display: inline-block;
+  text-align: center;
+  border: none;
+  background: none;
+  box-shadow: none;
+  color: #00ffcc;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  position: relative;
+  padding-left: 24px; /* more space for glitch effect */
+  overflow: visible;  /* needed for glitch */
+}
+
+/* Glitch effect assumes ::before on .glitch-btn or .glitch-btn-text */
+/* So no arrow here, arrow inside the text itself */
+
+/* Optional: underline on hover */
+.back-btn:hover {
+  text-decoration: underline;
+  color: #00e6b8;
+}
+
+/* JS goBack function */
+<script>
+  function goBack() {
+    history.back();
+  }
+</script>
+
+    @media (max-width: 500px) {
+      .form-container {
+        padding: 18px;
+      }
+    }
+
+    /* Custom Alert */
+    .custom-alert {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      background-color: #111;
+      color: white;
+      padding: 20px 25px;
+      border-radius: 14px;
+      border: 1px solid #00ffff99;
+      box-shadow: 0 0 20px #00ffff88;
+      z-index: 9999;
+      text-align: center;
+      width: 80%;
+      max-width: 350px;
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .custom-alert.show {
+      display: block;
+    }
+
+    .custom-alert.success {
+      border-color: #00ff88;
+      box-shadow: 0 0 15px #00ff8866;
+    }
+
+    .custom-alert.error {
+      border-color: #ff0066;
+      box-shadow: 0 0 15px #ff006666;
+    }
+
+    .custom-alert h4 {
+      margin-bottom: 10px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+
+    <button class="glitch-btn back-btn" onclick="goBack()">
+      <span class="glitch-btn-text" data-glitch="← Go Back">← Go Back</span>
+    </button>
+
+    <h2 class="glitch-text" data-glitch="Buy Data">Buy Data</h2>
+
+    <form id="dataForm">
+      <select id="network">
+        <option value="">Select Network</option>
+        <option value="MTN">MTN</option>
+        <option value="Airtel">Airtel</option>
+        <option value="Glo">Glo</option>
+        <option value="9mobile">9mobile</option>
+      </select>
+
+      <input type="tel" id="phone" placeholder="Enter 11-digit phone number" maxlength="11"/>
+
+      <select id="bundle">
+        <option value="">Select Data Bundle</option>
+        <option value="500MB">500MB</option>
+        <option value="1GB">1GB</option>
+        <option value="2GB">2GB</option>
+        <option value="5GB">5GB</option>
+        <option value="10GB">10GB</option>
+      </select>
+
+      <input type="password" id="qdx" placeholder="Enter QDX Code"/>
+
+      <button type="submit" class="glitch-btn">
+        <span class="glitch-btn-text" data-glitch="Purchase Data">Purchase Data</span>
+      </button>
+    </form>
+  </div>
+
+  <!-- Custom Alert -->
+  <div id="customAlert" class="custom-alert"><h4></h4><p></p></div>
+
+  <script>
+    function goBack() {
+      window.history.back();
+    }
+
+    const showAlert = (title, message, type = "success") => {
+      const alertBox = document.getElementById("customAlert");
+      alertBox.querySelector("h4").textContent = title;
+      alertBox.querySelector("p").textContent = message;
+      alertBox.className = `custom-alert show ${type}`;
+
+      setTimeout(() => {
+        alertBox.classList.remove("show");
+      }, 4000);
+    };
+
+    document.getElementById('dataForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const network = document.getElementById('network').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const bundle = document.getElementById('bundle').value.trim();
+      const qdx = document.getElementById('qdx').value.trim();
+      const correctQDX = "429642";
+
+      if (!network || !phone || !bundle || !qdx) {
+        showAlert("Incomplete Form", "Please fill out all the fields to continue.", "error");
+        return;
+      }
+
+      if (phone.length !== 11 || isNaN(phone)) {
+        showAlert("Invalid Phone", "Phone number must be exactly 11 digits.", "error");
+        return;
+      }
+
+      if (qdx !== correctQDX) {
+        showAlert("Invalid QDX Code", "The QDX code you entered is incorrect.", "error");
+        return;
+      }
+
+      showAlert("Success 🎉", `Data purchase successful!\n\n📶 ${network}, 📱 ${phone}, 📦 ${bundle}`, "success");
+    });
+  </script>
+
+</body>
+</html>
+
+
+
+
+

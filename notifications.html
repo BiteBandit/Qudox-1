@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Transaction History</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Share Tech Mono', monospace;
+      background: #0e0e0e;
+      color: white;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+    }
+
+    .glitch {
+      font-size: 28px;
+      color: #00ffea;
+      text-align: center;
+      position: relative;
+      animation: glitch 1s infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 red, -2px 0 blue; }
+      20% { text-shadow: -2px 2px red, 2px -2px blue; }
+      40% { text-shadow: 2px -2px red, -2px 2px blue; }
+      60% { text-shadow: -2px -2px red, 2px 2px blue; }
+      80% { text-shadow: 2px 2px red, -2px -2px blue; }
+      100% { text-shadow: -2px 0 red, 2px 0 blue; }
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .transaction-card {
+      background: #1a1a1a;
+      border: 1px solid #00ffea44;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .transaction-card h4 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .transaction-card p {
+      margin: 5px 0 0;
+      font-size: 14px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 class="glitch">Transaction History</h2>
+    <div id="historyList" class="history-list"></div>
+  </div>
+
+  <script type="module">
+    // Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
+    authDomain: "qudox-c4ffe.firebaseapp.com",
+    projectId: "qudox-c4ffe",
+    storageBucket: "qudox-c4ffe.appspot.com",
+    messagingSenderId: "499837322901",
+    appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const historyList = document.getElementById("historyList");
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const q = query(
+          collection(db, "users", user.uid, "transactions"),
+          orderBy("timestamp", "desc")
+        );
+        const snapshot = await getDocs(q);
+        if (snapshot.empty) {
+          historyList.innerHTML = "<p>No transactions yet.</p>";
+        } else {
+          snapshot.forEach(doc => {
+            const tx = doc.data();
+            const card = document.createElement("div");
+            card.className = "transaction-card";
+            card.innerHTML = `
+              <h4>${tx.type} - ₦${tx.amount.toLocaleString()}</h4>
+              <p>To ${tx.bank} - ${tx.accountNumber}</p>
+              <p>Date: ${tx.timestamp?.toDate().toLocaleString() || "Just now"}</p>
+            `;
+            historyList.appendChild(card);
+          });
+        }
+      } else {
+        historyList.innerHTML = "<p>Please log in to view your history.</p>";
+      }
+    });
+  </script>
+</body>
+</html>
