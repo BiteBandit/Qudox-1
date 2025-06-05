@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Support Section</title>
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: #0e0e0e;
+    color: #00ffea;
+    font-family: 'Share Tech Mono', monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  .back-btn {
+    align-self: flex-start;
+    margin-bottom: 20px;
+    color: #00ffea;
+    font-size: 1.2rem;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .card {
+    background: #111;
+    border-radius: 15px;
+    box-shadow: 0 0 15px #00ffea88, 0 0 40px #00ffea22;
+    padding: 30px;
+    margin: 10px;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+  }
+  .glitch {
+    font-size: 28px;
+    color: #00ffea;
+    text-align: center;
+    position: relative;
+    animation: glitch 1s infinite;
+  }
+  @keyframes glitch {
+    0% { text-shadow: 2px 0 red, -2px 0 blue; }
+    20% { text-shadow: -2px 2px red, 2px -2px blue; }
+    40% { text-shadow: 2px -2px red, -2px 2px blue; }
+    60% { text-shadow: -2px -2px red, 2px 2px blue; }
+    80% { text-shadow: 2px 2px red, -2px -2px blue; }
+    100% { text-shadow: -2px 0 red, 2px 0 blue; }
+  }
+  .icon-round {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: #00ffea;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 20px auto;
+    box-shadow: 0 0 15px #00ffeaaa;
+  }
+  .icon-round svg {
+    width: 35px;
+    height: 35px;
+    fill: #0e0e0e;
+  }
+  h2 {
+    font-weight: bold;
+    margin: 10px 0 6px;
+  }
+  p {
+    margin: 0 0 15px;
+    font-size: 0.95rem;
+    color: #66fff7cc;
+  }
+  button {
+    background: #0066ff;
+    border: none;
+    color: white;
+    font-weight: bold;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    animation: glitch 1s infinite;
+    box-shadow: 0 0 10px #0066ffcc;
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: #0051cc;
+  }
+  @media (max-width: 600px) {
+    .card {
+      max-width: 100%;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="back-btn" onclick="history.back()">← Go Back</div>
+
+<div class="card">
+  <div class="icon-round" aria-label="Email Support Icon">
+    <!-- Envelope icon SVG -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+  </div>
+  <h2 class="glitch">Email Support</h2>
+  <p>Contact us anytime via email for quick responses.</p>
+  <button onclick="window.location.href='mailto:support@example.com'">Contact via Email</button>
+</div>
+
+<div class="card">
+  <div class="icon-round" aria-label="Telegram Support Icon" style="background:#0088cc;">
+    <!-- Telegram paper plane icon SVG -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+  </div>
+  <h2 class="glitch">Telegram Support</h2>
+  <p>Join our Telegram channel for real-time support.</p>
+  <button onclick="window.open('https://t.me/yourtelegramchannel', '_blank')">Open Telegram</button>
+</div>
+
+<div class="card">
+  <div class="icon-round" aria-label="WhatsApp Support Icon" style="background:#25d366;">
+    <!-- WhatsApp phone icon SVG -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.53 14.7c-.25-.12-1.48-.73-1.7-.82-.23-.08-.4-.12-.57.12s-.65.82-.8.99-.3.18-.56.06c-.25-.12-1.06-.39-2.02-1.25-.75-.67-1.25-1.5-1.4-1.75-.15-.25-.02-.38.11-.5.12-.12.25-.3.37-.45.12-.15.16-.25.25-.42.08-.17.04-.32-.02-.45-.06-.12-.57-1.37-.78-1.87-.2-.5-.4-.43-.57-.44-.15 0-.32 0-.49 0-.17 0-.45.06-.69.32-.23.25-.9.88-.9 2.15s.92 2.5 1.05 2.68c.12.17 1.82 2.8 4.42 3.92.62.27 1.1.43 1.48.55.62.2 1.18.17 1.62.1.49-.08 1.48-.6 1.69-1.17.21-.58.21-1.07.15-1.17-.06-.12-.23-.18-.48-.3z"/></svg>
+  </div>
+  <h2 class="glitch">WhatsApp Support</h2>
+  <p>Chat directly with our support team on WhatsApp.</p>
+  <button onclick="window.open('https://wa.me/1234567890', '_blank')">Chat on WhatsApp</button>
+</div>
+
+<div class="card">
+  <div class="icon-round" aria-label="Live Chat Support Icon" style="background:#0047ab;">
+    <!-- Chat bubble icon SVG -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 4h16v12H5.17L4 17.17V4z"/></svg>
+  </div>
+  <h2 class="glitch">Live Chat Support</h2>
+  <p>Get instant answers with our live chat feature.</p>
+  <button onclick="window.location.href='livechat.html'">Start Live Chat</button>
+</div>
+
+</body>
+</html>
