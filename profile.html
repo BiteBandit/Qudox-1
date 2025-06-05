@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      margin: 0;
+      position: relative;
+    }
+
+    .profile-card {
+      background: #111;
+      border: 2px solid #00f2ff;
+      border-radius: 12px;
+      padding: 25px;
+      width: 90%;
+      max-width: 420px;
+      box-shadow: 0 0 25px #00f2ff80;
+      animation: fadeIn 1s ease-out;
+    }
+
+    .glitch {
+      font-size: 26px;
+      position: relative;
+      color: #fff;
+      animation: glitch 1s infinite;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+
+    .glitch::before {
+      left: 2px;
+      text-shadow: -2px 0 red;
+      clip-path: inset(10% 0 90% 0);
+      animation: glitchTop 2s infinite linear alternate-reverse;
+    }
+
+    .glitch::after {
+      left: -2px;
+      text-shadow: -2px 0 blue;
+      clip-path: inset(80% 0 10% 0);
+      animation: glitchBottom 2s infinite linear alternate-reverse;
+    }
+
+    @keyframes glitchTop {
+      0% { clip-path: inset(10% 0 90% 0); }
+      50% { clip-path: inset(40% 0 60% 0); }
+      100% { clip-path: inset(10% 0 90% 0); }
+    }
+
+    @keyframes glitchBottom {
+      0% { clip-path: inset(80% 0 10% 0); }
+      50% { clip-path: inset(50% 0 30% 0); }
+      100% { clip-path: inset(80% 0 10% 0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .glitch-button {
+      margin-top: 20px;
+      background: transparent;
+      border: 2px solid #00f2ff;
+      padding: 10px 20px;
+      color: #00f2ff;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .glitch-button:hover {
+      background-color: #00f2ff;
+      color: #000;
+    }
+
+    .support-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #00f2ff;
+      color: #000;
+      border-radius: 50%;
+      width: 55px;
+      height: 55px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      text-decoration: none;
+      box-shadow: 0 0 15px #00f2ff88;
+      transition: 0.3s;
+    }
+
+    .support-icon:hover {
+      background: #00e0cc;
+      box-shadow: 0 0 20px #00e0cc;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="profile-card">
+    <h2 class="glitch" data-text="User Profile">User Profile</h2>
+    <p><strong>Email:</strong> <span id="email">Loading...</span></p>
+    <p><strong>Username:</strong> <span id="username">Loading...</span></p>
+    <p><strong>Phone:</strong> <span id="phone">Loading...</span></p>
+    <p><strong>User ID:</strong> <span id="uid">Loading...</span></p>
+    <button class="glitch-button" onclick="history.back()">← Go Back</button>
+  </div>
+
+  <!-- Floating support icon -->
+  <a href="support.html" class="support-icon" title="Support">💬</a>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
+      authDomain: "qudox-c4ffe.firebaseapp.com",
+      projectId: "qudox-c4ffe",
+      storageBucket: "qudox-c4ffe.appspot.com",
+      messagingSenderId: "499837322901",
+      appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        document.getElementById("email").textContent = user.email;
+        document.getElementById("uid").textContent = user.uid;
+
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+          const data = userSnap.data();
+          document.getElementById("username").textContent = data.username || "N/A";
+          document.getElementById("phone").textContent = data.phone || "N/A";
+        } else {
+          document.getElementById("username").textContent = "Not found";
+          document.getElementById("phone").textContent = "Not found";
+        }
+      } else {
+        alert("You are not logged in. Redirecting to login page...");
+        window.location.href = "login.html";
+      }
+    });
+  </script>
+
+</body>
+</html>
