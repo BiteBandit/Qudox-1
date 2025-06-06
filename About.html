@@ -177,6 +177,15 @@ As the platform continues to grow, Qudox remains dedicated to innovation, securi
 
   type();
 </script>
-
+<!-- OneSignal Push Notification -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "934a0c87-9dcd-4a96-9727-789deec17f0c",
+    });
+  });
+</script>
 </body>
 </html>
