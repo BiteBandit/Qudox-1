@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>About Qudox</title>
+<style>
+  body {
+    background: #0f0f0f;
+    color: #e0e0e0;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .glitch-container {
+    position: relative;
+    font-size: 1.3rem;
+    max-width: 600px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    letter-spacing: 0.03em;
+  }
+
+  /* Glitch effect layers */
+  .glitch-text {
+    position: relative;
+    color: #00ff99;
+    text-shadow:
+      0 0 5px #00ff99,
+      0 0 10px #00ff99,
+      0 0 20px #00ff99,
+      0 0 40px #00ff99;
+    animation: flicker 3s infinite alternate;
+  }
+
+  .glitch-text::before,
+  .glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    right: 0;
+    opacity: 0.8;
+    clip: rect(0, 900px, 0, 0);
+  }
+
+  .glitch-text::before {
+    animation: glitchTop 2s infinite linear alternate-reverse;
+    color: #00ffaa;
+    left: 2px;
+    text-shadow: -2px 0 #00ffaa;
+  }
+
+  .glitch-text::after {
+    animation: glitchBottom 2s infinite linear alternate;
+    color: #00cc88;
+    left: -2px;
+    text-shadow: 2px 0 #00cc88;
+  }
+
+  /* Flicker animation */
+  @keyframes flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  /* Glitch clipping */
+  @keyframes glitchTop {
+    0% {
+      clip: rect(0, 900px, 5px, 0);
+      transform: translate(-2px, -2px);
+    }
+    20% {
+      clip: rect(5px, 900px, 15px, 0);
+      transform: translate(2px, 2px);
+    }
+    40% {
+      clip: rect(10px, 900px, 25px, 0);
+      transform: translate(-2px, 0);
+    }
+    60% {
+      clip: rect(15px, 900px, 30px, 0);
+      transform: translate(2px, -2px);
+    }
+    80% {
+      clip: rect(20px, 900px, 35px, 0);
+      transform: translate(-2px, 2px);
+    }
+    100% {
+      clip: rect(0, 900px, 5px, 0);
+      transform: translate(0);
+    }
+  }
+
+  @keyframes glitchBottom {
+    0% {
+      clip: rect(30px, 900px, 40px, 0);
+      transform: translate(2px, 2px);
+    }
+    20% {
+      clip: rect(25px, 900px, 35px, 0);
+      transform: translate(-2px, -2px);
+    }
+    40% {
+      clip: rect(20px, 900px, 30px, 0);
+      transform: translate(2px, 0);
+    }
+    60% {
+      clip: rect(15px, 900px, 25px, 0);
+      transform: translate(-2px, 2px);
+    }
+    80% {
+      clip: rect(10px, 900px, 20px, 0);
+      transform: translate(2px, -2px);
+    }
+    100% {
+      clip: rect(30px, 900px, 40px, 0);
+      transform: translate(0);
+    }
+  }
+
+  /* Typing effect */
+  #typing-text {
+    border-right: 2px solid #00ff99;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+</style>
+</head>
+<body>
+
+<div class="glitch-container">
+  <span id="typing-text" class="glitch-text" data-text=""></span>
+</div>
+
+<script>
+  const textLines = [
+`Launched in April 2022, Qudox quickly became a revolutionary platform in Nigeria’s digital earning landscape. Born from a spirit of curiosity and innovation, Qudox was created to empower Nigerians to easily earn extra income by simply tapping their way to rewards.
+
+At its core, Qudox is a tap-to-earn platform that allows users to earn naira through straightforward, engaging tasks accessible on any device. Over time, millions of Nigerians have benefited from Qudox’s user-friendly interface and reliable payout system, making it one of the most trusted and widely used earning apps in the country.
+
+Qudox’s success lies in its commitment to bridging the gap between digital opportunity and everyday users, especially those looking for flexible ways to supplement their income. By turning simple interactions into real earnings, Qudox has not only created a new wave of financial inclusion but also sparked curiosity and enthusiasm across communities eager to explore the digital economy.
+
+As the platform continues to grow, Qudox remains dedicated to innovation, security, and providing Nigerians with a safe and rewarding space to tap their way to financial empowerment.`
+  ];
+
+  const typingElement = document.getElementById('typing-text');
+  const fullText = textLines[0];
+  let index = 0;
+  let isDeleting = false;
+  let loopNum = 0;
+  let typingSpeed = 40;
+
+  function type() {
+    let displayedText = fullText.substring(0, index);
+    typingElement.textContent = displayedText;
+    typingElement.setAttribute('data-text', displayedText);
+
+    if (!isDeleting && index < fullText.length) {
+      index++;
+      setTimeout(type, typingSpeed);
+    } else if (isDeleting && index > 0) {
+      index--;
+      setTimeout(type, typingSpeed / 2);
+    } else {
+      isDeleting = !isDeleting;
+      if (!isDeleting) {
+        loopNum++;
+      }
+      setTimeout(type, 2000);
+    }
+  }
+
+  type();
+</script>
+
+</body>
+</html>

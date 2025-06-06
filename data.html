@@ -6,6 +6,8 @@
   <title>Buy Data Bundle</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
   <style>
+    /* your existing styles unchanged */
+    /* ... */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -138,37 +140,27 @@
     }
 
     /* Base back button styles, no border/background */
-.back-btn {
-  margin-bottom: 20px;
-  display: inline-block;
-  text-align: center;
-  border: none;
-  background: none;
-  box-shadow: none;
-  color: #00ffcc;
-  font-weight: bold;
-  font-size: 16px;
-  cursor: pointer;
-  position: relative;
-  padding-left: 24px; /* more space for glitch effect */
-  overflow: visible;  /* needed for glitch */
-}
+    .back-btn {
+      margin-bottom: 20px;
+      display: inline-block;
+      text-align: center;
+      border: none;
+      background: none;
+      box-shadow: none;
+      color: #00ffcc;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      position: relative;
+      padding-left: 24px; /* more space for glitch effect */
+      overflow: visible;  /* needed for glitch */
+    }
 
-/* Glitch effect assumes ::before on .glitch-btn or .glitch-btn-text */
-/* So no arrow here, arrow inside the text itself */
-
-/* Optional: underline on hover */
-.back-btn:hover {
-  text-decoration: underline;
-  color: #00e6b8;
-}
-
-/* JS goBack function */
-<script>
-  function goBack() {
-    history.back();
-  }
-</script>
+    /* Optional: underline on hover */
+    .back-btn:hover {
+      text-decoration: underline;
+      color: #00e6b8;
+    }
 
     @media (max-width: 500px) {
       .form-container {
@@ -237,7 +229,7 @@
     <h2 class="glitch-text" data-glitch="Buy Data">Buy Data</h2>
 
     <form id="dataForm">
-      <select id="network">
+      <select id="network" required>
         <option value="">Select Network</option>
         <option value="MTN">MTN</option>
         <option value="Airtel">Airtel</option>
@@ -245,9 +237,9 @@
         <option value="9mobile">9mobile</option>
       </select>
 
-      <input type="tel" id="phone" placeholder="Enter 11-digit phone number" maxlength="11"/>
+      <input type="tel" id="phone" placeholder="Enter 11-digit phone number" maxlength="11" pattern="\d{11}" required/>
 
-      <select id="bundle">
+      <select id="bundle" required>
         <option value="">Select Data Bundle</option>
         <option value="500MB">500MB</option>
         <option value="1GB">1GB</option>
@@ -256,7 +248,7 @@
         <option value="10GB">10GB</option>
       </select>
 
-      <input type="password" id="qdx" placeholder="Enter QDX Code"/>
+      <input type="password" id="qdx" placeholder="Enter QDX Code" required/>
 
       <button type="submit" class="glitch-btn">
         <span class="glitch-btn-text" data-glitch="Purchase Data">Purchase Data</span>
@@ -266,6 +258,11 @@
 
   <!-- Custom Alert -->
   <div id="customAlert" class="custom-alert"><h4></h4><p></p></div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
   <script>
     function goBack() {
@@ -283,14 +280,48 @@
       }, 4000);
     };
 
-    document.getElementById('dataForm').addEventListener('submit', function (e) {
+    // Your Firebase config — replace with your own
+    const firebaseConfig = {
+      apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
+    authDomain: "qudox-c4ffe.firebaseapp.com",
+    projectId: "qudox-c4ffe",
+    storageBucket: "qudox-c4ffe.appspot.com",
+    messagingSenderId: "499837322901",
+    appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
+  };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // Dummy bundle prices
+    const bundlePrices = {
+      "500MB": 100,
+      "1GB": 200,
+      "2GB": 350,
+      "5GB": 800,
+      "10GB": 1500
+    };
+
+    // Assume user is already logged in — get userId from auth
+    let userId = null;
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        userId = user.uid;
+      } else {
+        showAlert("Not logged in", "Please login to purchase data.", "error");
+      }
+    });
+
+    document.getElementById('dataForm').addEventListener('submit', async function (e) {
       e.preventDefault();
 
       const network = document.getElementById('network').value.trim();
       const phone = document.getElementById('phone').value.trim();
       const bundle = document.getElementById('bundle').value.trim();
       const qdx = document.getElementById('qdx').value.trim();
-      const correctQDX = "429642";
+      const correctQDX = "X9f$7Lm#2Vp@Q4";
 
       if (!network || !phone || !bundle || !qdx) {
         showAlert("Incomplete Form", "Please fill out all the fields to continue.", "error");
@@ -307,14 +338,53 @@
         return;
       }
 
-      showAlert("Success 🎉", `Data purchase successful!\n\n📶 ${network}, 📱 ${phone}, 📦 ${bundle}`, "success");
+      if (!userId) {
+        showAlert("Not Logged In", "You must be logged in to make a purchase.", "error");
+        return;
+      }
+
+      const price = bundlePrices[bundle];
+      if (!price) {
+        showAlert("Invalid Bundle", "Selected bundle is invalid.", "error");
+        return;
+      }
+
+      try {
+        // Get user document
+        const userDoc = await db.collection('users').doc(userId).get();
+
+        if (!userDoc.exists) {
+          showAlert("User Not Found", "User data not found. Please contact support.", "error");
+          return;
+        }
+
+        const userData = userDoc.data();
+        let currentBalance = userData.balance || 0;
+
+        if (currentBalance < price) {
+          showAlert("Insufficient Balance", `You need ₦${price} but you only have ₦${currentBalance}. Please top up your balance.`, "error");
+          return;
+        }
+
+        // Deduct balance
+        const newBalance = currentBalance - price;
+
+        await db.collection('users').doc(userId).update({
+          balance: newBalance
+        });
+
+        // Show success
+        showAlert("Success 🎉", `Data purchase successful!\n\n📶 ${network}\n📱 ${phone}\n📦 ${bundle}\n\n₦${price} deducted from your balance.\nNew Balance: ₦${newBalance}`, "success");
+
+        // Optionally reset the form
+        this.reset();
+
+      } catch (error) {
+        console.error("Error purchasing data:", error);
+        showAlert("Error", "Something went wrong. Please try again later.", "error");
+      }
     });
   </script>
 
 </body>
 </html>
-
-
-
-
-

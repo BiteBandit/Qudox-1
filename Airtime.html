@@ -44,7 +44,6 @@
       left: 0;
       width: 100%;
       overflow: hidden;
-      color: #007BFF;
     }
 
     .glitch-text::before {
@@ -137,38 +136,26 @@
       z-index: 2;
     }
 
-    /* Base back button styles, no border/background */
-.back-btn {
-  margin-bottom: 20px;
-  display: inline-block;
-  text-align: center;
-  border: none;
-  background: none;
-  box-shadow: none;
-  color: #00ffcc;
-  font-weight: bold;
-  font-size: 16px;
-  cursor: pointer;
-  position: relative;
-  padding-left: 24px; /* more space for glitch effect */
-  overflow: visible;  /* needed for glitch */
-}
+    .back-btn {
+      margin-bottom: 20px;
+      display: inline-block;
+      text-align: center;
+      border: none;
+      background: none;
+      box-shadow: none;
+      color: #00ffcc;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      position: relative;
+      padding-left: 24px;
+      overflow: visible;
+    }
 
-/* Glitch effect assumes ::before on .glitch-btn or .glitch-btn-text */
-/* So no arrow here, arrow inside the text itself */
-
-/* Optional: underline on hover */
-.back-btn:hover {
-  text-decoration: underline;
-  color: #00e6b8;
-}
-
-/* JS goBack function */
-<script>
-  function goBack() {
-    history.back();
-  }
-</script>
+    .back-btn:hover {
+      text-decoration: underline;
+      color: #00e6b8;
+    }
 
     @media (max-width: 500px) {
       .form-container {
@@ -176,7 +163,6 @@
       }
     }
 
-    /* Custom Alert */
     .custom-alert {
       position: fixed;
       top: 50%;
@@ -229,7 +215,6 @@
 <body>
 
   <div class="form-container">
-
     <button class="glitch-btn back-btn" onclick="goBack()">
       <span class="glitch-btn-text" data-glitch="← Go Back">← Go Back</span>
     </button>
@@ -237,7 +222,7 @@
     <h2 class="glitch-text" data-glitch="Buy airtime">Buy airtime</h2>
 
     <form id="dataForm">
-      <select id="network">
+      <select id="network" required>
         <option value="">Select Network</option>
         <option value="MTN">MTN</option>
         <option value="Airtel">Airtel</option>
@@ -245,11 +230,11 @@
         <option value="9mobile">9mobile</option>
       </select>
 
-      <input type="tel" id="phone" pattern="\d{11}" placeholder="Enter 11-digit phone number" maxlength="11"/>
+      <input type="tel" id="phone" pattern="\d{11}" placeholder="Enter 11-digit phone number" maxlength="11" required/>
 
-            <input type="number" id="amount" placeholder="Enter amount">
+      <input type="number" id="amount" placeholder="Enter amount" required>
 
-      <input type="password" id="qdx" placeholder="Enter QDX Code"/>
+      <input type="password" id="qdx" placeholder="Enter QDX Code" required/>
 
       <button type="submit" class="glitch-btn">
         <span class="glitch-btn-text" data-glitch="Purchase Data">Purchase Data</span>
@@ -257,56 +242,94 @@
     </form>
   </div>
 
-  <!-- Custom Alert -->
   <div id="customAlert" class="custom-alert"><h4></h4><p></p></div>
 
   <script>
     function goBack() {
-      window.history.back();
+      history.back();
     }
 
-    const showAlert = (title, message, type = "success") => {
+    function showCustomAlert(type, title, message) {
       const alertBox = document.getElementById("customAlert");
+      alertBox.className = `custom-alert show ${type}`;
       alertBox.querySelector("h4").textContent = title;
       alertBox.querySelector("p").textContent = message;
-      alertBox.className = `custom-alert show ${type}`;
-
-      setTimeout(() => {
-        alertBox.classList.remove("show");
-      }, 4000);
-    };
-
-    document.getElementById('dataForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      const network = document.getElementById('network').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const amount = document.getElementById('amount').value.trim();
-      const qdx = document.getElementById('qdx').value.trim();
-      const correctQDX = "429642";
-
-      if (!network || !phone || !bundle || !qdx) {
-        showAlert("Incomplete Form", "Please fill out all the fields to continue.", "error");
-        return;
-      }
-
-      if (phone.length !== 11 || isNaN(phone)) {
-        showAlert("Invalid Phone", "Phone number must be exactly 11 digits.", "error");
-        return;
-      }
-
-      if (qdx !== correctQDX) {
-        showAlert("Invalid QDX Code", "The QDX code you entered is incorrect.", "error");
-        return;
-      }
-
-      showAlert("Success 🎉", `Data purchase successful!\n\n📶 ${network}, 📱 ${phone}, 📦 ${bundle}`, "success");
-    });
+      setTimeout(() => alertBox.classList.remove("show", type), 4000);
+    }
   </script>
+
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
+    authDomain: "qudox-c4ffe.firebaseapp.com",
+    projectId: "qudox-c4ffe",
+    storageBucket: "qudox-c4ffe.appspot.com",
+    messagingSenderId: "499837322901",
+    appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const VALID_QDX_CODE = "X9f$7Lm#2Vp@Q4";  // <-- Your hidden QDX code here
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const uid = user.uid;
+      const userRef = doc(db, "users", uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+
+        document.getElementById("dataForm").addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const amountInput = document.getElementById("amount");
+          const qdxInput = document.getElementById("qdx");
+
+          const amount = parseFloat(amountInput.value);
+          const enteredQdx = qdxInput.value.trim();
+
+          // Validate amount
+          if (isNaN(amount) || amount <= 0) {
+            showCustomAlert("error", "Invalid Amount", "Please enter a valid amount.");
+            return;
+          }
+
+          // Validate QDX against hidden code
+          if (!enteredQdx || enteredQdx !== VALID_QDX_CODE) {
+            showCustomAlert("error", "Invalid QDX", "The QDX code you entered is incorrect.");
+            return;
+          }
+
+          const currentBalance = userData.balance || 0;
+
+          if (currentBalance < amount) {
+            showCustomAlert("error", "Insufficient Balance", "You do not have enough funds.");
+            return;
+          }
+
+          try {
+            const newBalance = currentBalance - amount;
+            await updateDoc(userRef, { balance: newBalance });
+
+            showCustomAlert("success", "Success!", `Airtime purchase of ₦${amount} successful. New balance: ₦${newBalance}`);
+            amountInput.value = "";
+            qdxInput.value = "";
+          } catch (error) {
+            console.error("Transaction Error:", error);
+            showCustomAlert("error", "Error", "Transaction failed. Try again.");
+          }
+        });
+      }
+    }
+  });
+</script>
 </body>
 </html>
-
-
-
-
-

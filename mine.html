@@ -115,7 +115,7 @@
 </head>
 <body>
   <button class="back-btn" onclick="window.location.href='dashboard.html'">⬅ Back</button>
-  <h1 class="glitch">Naira Coin Mining</h1>
+  <h1 class="glitch">Naira Mining(NGN)</h1>
 
   <img id="coin" src="https://i.postimg.cc/zB2R0wsF/naira-coin-circular.png" alt="Naira Coin" />
 
@@ -202,8 +202,8 @@ coin.addEventListener("click", () => {
     return;
   }
 
-  mined += 30;
-  minedToday += 30;
+  mined += 15;
+  minedToday += 15;
   minedDisplay.textContent = `₦${mined.toLocaleString()}`;
   coinSound.currentTime = 0;
   coinSound.play();

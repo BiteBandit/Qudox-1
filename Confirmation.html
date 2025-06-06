@@ -1,0 +1,160 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QDX Transfer Confirmation</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0d0d0d;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background: #111;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+      width: 100%;
+      max-width: 500px;
+    }
+    .glitch {
+      position: relative;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #00ffff;
+      animation: glitch 1s infinite linear alternate-reverse;
+    }
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 red; }
+      20% { text-shadow: -2px 0 blue; }
+      40% { text-shadow: 2px 2px green; }
+      60% { text-shadow: -2px -2px magenta; }
+      80% { text-shadow: 2px -2px yellow; }
+      100% { text-shadow: -2px 2px cyan; }
+    }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+    }
+    input, select {
+      background: #1a1a1a;
+      color: white;
+    }
+    input[readonly] {
+      background: #2a2a2a;
+    }
+    button {
+      background: #00ffff;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #111;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 15px cyan;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="glitch">Confirm Your Transfer</div>
+    <form id="confirmForm">
+      <label>User ID</label>
+      <input type="text" id="userId" readonly><label>Email</label>
+  <input type="email" id="email" required>
+
+  <label>Bank Account Name</label>
+  <input type="text" id="accountName" required>
+
+  <label>Bank Used for Transfer</label>
+  <input type="text" id="bankUsed" required>
+
+  <label>Upload Screenshot</label>
+  <input type="file" id="screenshot" accept="image/*" required>
+
+  <button type="submit">Submit</button>
+</form>
+
+  </div>  <div class="popup" id="popup">
+    <p>✅ Once payment is confirmed, your QDX code will be sent to your email.</p>
+  </div>  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
+      authDomain: "qudox-c4ffe.firebaseapp.com",
+      projectId: "qudox-c4ffe",
+      storageBucket: "qudox-c4ffe.appspot.com",
+      messagingSenderId: "499837322901",
+      appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
+    };
+    firebase.initializeApp(firebaseConfig);
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById('userId').value = user.uid;
+      }
+    });
+
+    document.getElementById('confirmForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const userId = document.getElementById('userId').value;
+      const email = document.getElementById('email').value;
+      const accountName = document.getElementById('accountName').value;
+      const bankUsed = document.getElementById('bankUsed').value;
+      const screenshotFile = document.getElementById('screenshot').files[0];
+
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64Image = reader.result;
+
+        const message = `🧾 *QDX TRANSFER CONFIRMATION*\n\n👤 User ID: ${userId}\n📧 Email: ${email}\n🏦 Account Name: ${accountName}\n🏛 Bank Used: ${bankUsed}`;
+
+        const botToken = '8151429137:AAEZb095wNIkxujeKqXIzXWHycNaIOB15_0';
+        const chatId = '6387122230';
+
+        // Send text
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: "Markdown" })
+        });
+
+        // Send image
+        const formData = new FormData();
+        formData.append("chat_id", chatId);
+        formData.append("photo", screenshotFile);
+
+        await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+          method: 'POST',
+          body: formData
+        });
+
+        // Show popup
+        document.getElementById('popup').style.display = 'block';
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 3500);
+      };
+      reader.readAsDataURL(screenshotFile);
+    });
+  </script></body>
+</html>

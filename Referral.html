@@ -76,7 +76,7 @@
       animation: glitch 1s infinite;
     }
 
-    /* 🔥 Glitch Animation (Your Style) */
+    /* 🔥 Glitch Animation */
     @keyframes glitch {
       0% { text-shadow: 2px 0 red, -2px 0 blue; }
       20% { text-shadow: -2px 2px red, 2px -2px blue; }
@@ -89,9 +89,12 @@
 </head>
 <body>
   <h1>Your Referral Link</h1>
-  <p class="motivation">Refer your friends and earn ₦700 for each successful referral!</p>
+  <p class="motivation">
+    Refer your friends and earn ₦1700 for each successful referral!<br />
+    Please note, we are currently experiencing issues with the referral counter displaying correctly, but rest assured, all referral rewards will still be added to your balance as usual.
+  </p>
 
-<div id="referralLink" title="Click to copy referral link">Loading...</div>
+  <div id="referralLink" title="Click to copy referral link">Loading...</div>
   <button id="copyBtn">Copy Referral Link</button>
   <div id="statusMessage"></div>
 
@@ -102,16 +105,16 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
     const firebaseConfig = {
-      // Your Firebase config goes here
+      // Your Firebase config here
       apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
-    authDomain: "qudox-c4ffe.firebaseapp.com",
-    projectId: "qudox-c4ffe",
-    storageBucket: "qudox-c4ffe.appspot.com",
-    messagingSenderId: "499837322901",
-    appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
+      authDomain: "qudox-c4ffe.firebaseapp.com",
+      projectId: "qudox-c4ffe",
+      storageBucket: "qudox-c4ffe.appspot.com",
+      messagingSenderId: "499837322901",
+      appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -153,6 +156,18 @@
         }, 2000);
       }).catch(() => {
         statusMessageEl.textContent = "Failed to copy referral link.";
+      });
+    });
+
+    // Optional: clicking the referral link also copies it
+    referralLinkEl.addEventListener("click", () => {
+      if (!referralLink) return;
+
+      navigator.clipboard.writeText(referralLink).then(() => {
+        statusMessageEl.textContent = "Referral link copied! 🎉";
+        setTimeout(() => {
+          statusMessageEl.textContent = "";
+        }, 2000);
       });
     });
   </script>

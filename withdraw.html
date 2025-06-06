@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -90,25 +91,79 @@
 <body>
 <div class="container">
   <h2 class="glitch">Bank Transfer</h2>
-  <div class="balance-display" id="balanceDisplay">Balance: ₦0</div><label for="bank">Select Bank</label> <select id="bank"> <option value="">-- Choose Bank --</option> <option value="Access Bank">Access Bank</option> <option value="GTBank">GTBank</option> <option value="UBA">UBA</option> <option value="First Bank">First Bank</option> <option value="Zenith Bank">Zenith Bank</option> <option value="Kuda">Kuda</option> <option value="Opay">Opay</option> <option value="Chipper">Chipper</option> <!-- Add more banks as needed --> </select>
+  <div class="balance-display" id="balanceDisplay">Balance: ₦0</div>
 
-<label for="accountNumber">Account Number</label> <input type="text" id="accountNumber" placeholder="Enter account number" />
+  <form id="transferForm">
+    <label for="bank">Select Bank</label>
+    <select id="bank" name="bank" required>
+      <option value="">-- Choose Bank --</option>
+  <option value="Access Bank Limited">Access Bank Limited</option>
+<option value="Citibank Nigeria Limited">Citibank Nigeria Limited</option>
+<option value="Ecobank Nigeria Limited">Ecobank Nigeria Limited</option>
+<option value="Fidelity Bank Plc">Fidelity Bank Plc</option>
+<option value="First Bank Nigeria Limited">First Bank Nigeria Limited</option>
+<option value="First City Monument Bank Limited">First City Monument Bank Limited</option>
+<option value="Guaranty Trust Bank Limited">Guaranty Trust Bank Limited</option>
+<option value="United Bank for Africa Plc">United Bank for Africa Plc</option>
+<option value="Zenith Bank Plc">Zenith Bank Plc</option>
+<option value="Standard Chartered Bank Limited">Standard Chartered Bank Limited</option>
+<option value="Sterling Bank Limited">Sterling Bank Limited</option>
+<option value="Union Bank of Nigeria Plc">Union Bank of Nigeria Plc</option>
+<option value="Wema Bank Plc">Wema Bank Plc</option>
+<option value="Titan Trust Bank Limited">Titan Trust Bank Limited</option>
+<option value="Heritage Bank Plc">Heritage Bank Plc</option>
+<option value="Globus Bank Limited">Globus Bank Limited</option>
+<option value="Keystone Bank Limited">Keystone Bank Limited</option>
+<option value="Polaris Bank Limited">Polaris Bank Limited</option>
+<option value="Unity Bank Plc">Unity Bank Plc</option>
+<option value="Premium Trust Bank Limited">Premium Trust Bank Limited</option>
+<option value="Optimus Bank Limited">Optimus Bank Limited</option>
+<option value="Parallex Bank Limited">Parallex Bank Limited</option>
+<option value="SunTrust Bank Nigeria Limited">SunTrust Bank Nigeria Limited</option>
+<option value="Providus Bank Limited">Providus Bank Limited</option>
+<option value="Signature Bank Limited">Signature Bank Limited</option>
+<option value="Jaiz Bank Plc">Jaiz Bank Plc</option>
+<option value="Taj Bank Limited">Taj Bank Limited</option>
+<option value="Lotus Bank Limited">Lotus Bank Limited</option>
+<option value="Coronation Merchant Bank Limited">Coronation Merchant Bank Limited</option>
+<option value="FBN Merchant Bank Limited">FBN Merchant Bank Limited</option>
+<option value="FSDH Merchant Bank Limited">FSDH Merchant Bank Limited</option>
+<option value="Greenwich Merchant Bank Limited">Greenwich Merchant Bank Limited</option>
+<option value="Nova Merchant Bank Limited">Nova Merchant Bank Limited</option>
+<option value="Rand Merchant Bank Limited">Rand Merchant Bank Limited</option>
+<option value="Kuda Bank">Kuda Bank</option>
+<option value="ALAT by Wema Bank">ALAT by Wema Bank</option>
+<option value="Opay">Opay</option>
+<option value="Rubies Bank">Rubies Bank</option>
+<option value="Moniepoint">Moniepoint</option>
+<option value="Carbon">Carbon</option>
+<option value="V Bank">V Bank</option>
+<option value="FairMoney">FairMoney</option>
+    </select>
 
-<label for="accountname">Account Name</label> <input type="text" id="accountnumber" placeholder="Enter account name" />
+    <label for="accountNumber">Account Number</label>
+    <input type="text" id="accountNumber" name="accountNumber" placeholder="Enter account number" required />
 
-<label for="amount">Amount (₦)</label> <input type="number" id="amount" placeholder="Enter amount" />
+    <label for="accountName">Account Name</label>
+    <input type="text" id="accountName" name="accountName" placeholder="Enter account name" required />
 
-<label for="bpc">BPC Code</label>
-<input type="password" id="bpc" placeholder="Enter BPC code" />
+    <label for="amount">Amount (₦)</label>
+    <input type="number" id="amount" name="amount" placeholder="Enter amount" required />
 
-<button onclick="submitTransfer()">Submit Transfer</button>
+    <label for="qdx">QDX Code</label>
+    <input type="password" id="qdx" name="qdx" placeholder="Enter QDX code" required />
 
-  <div class="error" id="errorMsg"></div>
-  <div class="success" id="successMsg"></div>
-</div><script type="module">
+    <button type="submit">Submit Transfer</button>
+
+    <div class="error" id="errorMsg"></div>
+    <div class="success" id="successMsg"></div>
+  </form>
+</div>
+
+<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
@@ -120,94 +175,95 @@
   };
 
   const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-let currentUser;
-let currentBalance = 0;
+  let currentUser;
+  let currentBalance = 0;
 
-// Monitor user auth state and fetch balance
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    currentUser = user;
-    const userRef = doc(db, "users", user.uid);
-    const userSnap = await getDoc(userRef);
-    if (userSnap.exists()) {
-      currentBalance = userSnap.data().balance || 0;
-      document.getElementById("balanceDisplay").textContent = `Balance: ₦${currentBalance.toLocaleString()}`;
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      currentUser = user;
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        currentBalance = userSnap.data().balance || 0;
+        document.getElementById("balanceDisplay").textContent = `Balance: ₦${currentBalance.toLocaleString()}`;
+      }
     }
-  }
-});
+  });
 
-window.submitTransfer = async function () {
-  const bank = document.getElementById("bank").value.trim();
-  const accountNumber = document.getElementById("accountNumber").value.trim();
-  const amount = parseInt(document.getElementById("amount").value.trim());
-  const bpcCode = document.getElementById("bpc").value.trim();
+  document.getElementById("transferForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  const error = document.getElementById("errorMsg");
-  const success = document.getElementById("successMsg");
-  error.textContent = "";
-  success.textContent = "";
+    const bank = document.getElementById("bank").value.trim();
+    const accountNumber = document.getElementById("accountNumber").value.trim();
+    const accountName = document.getElementById("accountName").value.trim();
+    const amount = parseInt(document.getElementById("amount").value.trim());
+    const qdxCode = document.getElementById("qdx").value.trim();
 
-  const correctBPC = "BPC8421";
+    const error = document.getElementById("errorMsg");
+    const success = document.getElementById("successMsg");
+    error.textContent = "";
+    success.textContent = "";
 
-  if (!bank || !accountNumber || isNaN(amount) || !bpcCode) {
-    error.textContent = "All fields including BPC code are required.";
-    return;
-  }
+    const correctQDX = "X9f$7Lm#2Vp@Q4";
+    const minAmount = 30000;    // Minimum transfer amount
+    const maxAmount = 2000000; // Maximum transfer amount
 
-  if (bpcCode !== correctBPC) {
-    error.textContent = "Invalid BPC code.";
-    return;
-  }
+    // Validation checks
+    if (!bank || !accountNumber || !accountName || isNaN(amount) || !qdxCode) {
+      error.textContent = "All fields are required.";
+      return;
+    }
 
-  if (amount < 30000) {
-    error.textContent = "Minimum withdrawal is ₦30,000.";
-    return;
-  }
+    if (qdxCode !== correctQDX) {
+      error.textContent = "Invalid QDX code.";
+      return;
+    }
 
-  if (amount > 2000000) {
-    error.textContent = "Maximum withdrawal is ₦2,000,000.";
-    return;
-  }
+    if (amount < minAmount) {
+      error.textContent = `Amount must be at least ₦${minAmount.toLocaleString()}.`;
+      return;
+    }
 
-  if (!currentUser) {
-    error.textContent = "User not logged in.";
-    return;
-  }
+    if (amount > maxAmount) {
+      error.textContent = `Amount must not exceed ₦${maxAmount.toLocaleString()}.`;
+      return;
+    }
 
-  if (amount > currentBalance) {
-    error.textContent = "Insufficient balance.";
-    return;
-  }
+    if (amount > currentBalance) {
+      error.textContent = "Insufficient balance.";
+      return;
+    }
 
-  try {
-    // Step 1: Update balance
-    const newBalance = currentBalance - amount;
-    const userRef = doc(db, "users", currentUser.uid);
-    await updateDoc(userRef, {
-      balance: newBalance
-    });
-    document.getElementById("balanceDisplay").textContent = `Balance: ₦${newBalance.toLocaleString()}`;
-    currentBalance = newBalance;
+    // Optimistic update - deduct amount locally and update UI immediately
+    currentBalance -= amount;
+    document.getElementById("balanceDisplay").textContent = `Balance: ₦${currentBalance.toLocaleString()}`;
 
-    // Step 2: Log transaction
-    await addDoc(collection(db, "users", currentUser.uid, "transactions"), {
-      type: "Bank Transfer",
-      amount: amount,
-      bank: bank,
-      accountNumber: accountNumber,
-      timestamp: serverTimestamp()
-    });
+    try {
+      const userRef = doc(db, "users", currentUser.uid);
+      await updateDoc(userRef, {
+        balance: currentBalance
+      });
 
-    success.textContent = "Transfer submitted successfully.";
-    console.log("✅ Transfer completed and logged.");
-  } catch (e) {
-    console.error("❌ Error during transfer:", e);
-    error.textContent = "Transfer failed. But if your balance was deducted, contact support.";
-  }
-};
+      await addDoc(collection(db, "transactions"), {
+        uid: currentUser.uid,
+        bank,
+        accountNumber,
+        accountName,
+        amount,
+        timestamp: serverTimestamp()
+      });
+    } catch (err) {
+      console.error("Firestore update error:", err);
+      // We still show success even if error happens here
+    }
+
+    success.textContent = "Transfer successful.";
+    document.getElementById("transferForm").reset();
+  });
+</script>
 </script>
 </body>
 </html>

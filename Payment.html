@@ -1,0 +1,202 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buy QDX - Bank Transfer</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0a0a0a;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }.container {
+  max-width: 500px;
+  width: 100%;
+}
+
+.instructions {
+  background-color: #111;
+  padding: 20px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
+
+.instructions h2 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #00ffff;
+}
+
+.instructions ol {
+  padding-left: 20px;
+}
+
+.instructions li {
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+.card {
+  background-color: #1b1b1b;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+  margin-bottom: 20px;
+}
+
+.detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 10px;
+}
+
+.glitch-label {
+  font-weight: bold;
+  color: #00ffff;
+}
+
+.copy-btn {
+  padding: 5px 10px;
+  background: #00ffff;
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  cursor: pointer;
+  font-size: 0.85em;
+}
+
+.confirm-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 1em;
+  background-color: #00ffff;
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.confirm-btn:hover {
+  background-color: #00cccc;
+}
+
+.glitch {
+  position: relative;
+  color: #fff;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  color: #00ffff;
+  animation: glitch 1.2s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+  color: #ff00ff;
+  animation-delay: 0.2s;
+}
+
+@keyframes glitch {
+  0% {
+    clip-path: inset(0 0 90% 0);
+  }
+  20% {
+    clip-path: inset(10% 0 75% 0);
+  }
+  40% {
+    clip-path: inset(40% 0 45% 0);
+  }
+  60% {
+    clip-path: inset(80% 0 10% 0);
+  }
+  80% {
+    clip-path: inset(60% 0 30% 0);
+  }
+  100% {
+    clip-path: inset(90% 0 0 0);
+  }
+}
+
+@media (max-width: 500px) {
+  .detail {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .copy-btn {
+    margin-top: 5px;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="instructions">
+      <h2 class="glitch" data-text="Bank Transfer Steps">Bank Transfer Steps</h2>
+      <ol>
+        <li>Copy the account details below.</li>
+        <li>Open your bank app and make the transfer.</li>
+        <li>Return here and click "I have made the transfer".</li>
+        <li>Make sure to transfer the exact amount.</li>
+        <li>You will receive your QDX code directly via email once payment is confirmed.</li>
+      </ol>
+    </div><div class="card">
+  <div class="detail">
+    <label class="glitch glitch-label" data-text="Amount:">Amount:</label>
+    <div class="value" id="amount">₦5,000.00</div>
+    <button class="copy-btn" data-copy="₦5000.00">Copy</button>
+  </div>
+  <div class="detail">
+    <label class="glitch glitch-label" data-text="Account Number:">Account Number:</label>
+    <div class="value">6094827567</div>
+    <button class="copy-btn" data-copy="6094827567">Copy</button>
+  </div>
+  <div class="detail">
+    <label class="glitch glitch-label" data-text="Bank Name:">Bank Name:</label>
+    <div class="value">9 Payment Service Bank</div>
+    <button class="copy-btn" data-copy="9 Payment Service Bank">Copy</button>
+  </div>
+  <div class="detail">
+    <label class="glitch glitch-label" data-text="Account Name:">Account Name:</label>
+    <div class="value">Chipper Cash / Chukwuma Bridget</div>
+    <button class="copy-btn" data-copy="Chipper Cash / Chukwuma Bridget">Copy</button>
+  </div>
+</div>
+
+<button class="confirm-btn" onclick="window.location.href='Confirmation.html'">
+  I have made this bank transfer
+</button>
+
+  </div>  <script>
+    const buttons = document.querySelectorAll(".copy-btn");
+
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const value = btn.getAttribute("data-copy");
+        navigator.clipboard.writeText(value).then(() => {
+          btn.textContent = "Copied!";
+          setTimeout(() => {
+            btn.textContent = "Copy";
+          }, 1500);
+        });
+      });
+    });
+  </script></body>
+</html>
