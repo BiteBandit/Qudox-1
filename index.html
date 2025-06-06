@@ -179,57 +179,21 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, serverTimestamp, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js";
-
   const firebaseConfig = {
     apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
-    authDomain: "qudox-c4ffe.firebaseapp.com",
-    projectId: "qudox-c4ffe",
-    storageBucket: "qudox-c4ffe.firebasestorage.app",
-    messagingSenderId: "499837322901",
-    appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
-  };
+  authDomain: "qudox-c4ffe.firebaseapp.com",
+  projectId: "qudox-c4ffe",
+  storageBucket: "qudox-c4ffe.firebasestorage.app",
+  messagingSenderId: "499837322901",
+  appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
+};
 
   const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// ✅ Cloud Messaging setup
-const messaging = getMessaging(app);
-
-Notification.requestPermission().then(permission => {
-  if (permission === 'granted') {
-    getToken(messaging, {
-      vapidKey: "BBjM84hs7i_R5p01fppKfL2OoePDzivea_UgWJbNPSdLuYj2wlBq7wv-H1xzi6CEr9C3gWW0SZ4oKuVQOJz4PO8"
-    })
-    .then((currentToken) => {
-      if (currentToken) {
-        console.log("✅ Notification token:", currentToken);
-        // Send this token to your backend to store it if needed
-      } else {
-        console.warn("⚠️ No token available. Request permission to generate one.");
-      }
-    })
-    .catch((err) => {
-      console.error("🚫 An error occurred while retrieving token.", err);
-    });
-  } else {
-    console.warn("Notification permission not granted.");
-  }
-});
-
-  // Handle foreground notifications
-  // Handle foreground notifications
-onMessage(messaging, (payload) => {
-  console.log("📬 Message received. ", payload);
-  const { title, body } = payload.notification || {};
-  if (title && body) {
-    new Notification(title, { body });
-  }
-});
+  const auth = getAuth(app);
+  const db = getFirestore(app);
   // Get referral code from URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const referrerId = urlParams.get("ref"); // This is the UID of the person who referred the new user
+const urlParams = new URLSearchParams(window.location.search);
+const referrerId = urlParams.get("ref"); // This is the UID of the person who referred the new user
 
   const registerForm = document.getElementById("registerForm");
   const usernameInput = document.getElementById("username");
@@ -325,29 +289,29 @@ onMessage(messaging, (payload) => {
 
       // Save user info in Firestore
       await setDoc(doc(db, "users", user.uid), {
-        username: usernameInput.value.trim(),
-        email: emailInput.value.trim(),
-        phone: phoneInput.value.trim(),
-        balance: 0,
-        createdAt: serverTimestamp(),
-        referrer: referrerId || null,
-      });
-
-      if (referrerId) {
-        const referrerRef = doc(db, "users", referrerId);
-        const refSnap = await getDoc(referrerRef);
-        if (refSnap.exists()) {
-          const currentRefBalance = refSnap.data().balance || 0;
-          await updateDoc(referrerRef, {
-            balance: currentRefBalance + 1700 // reward the referrer ₦1700
-          });
-        }
-      }
+  username: usernameInput.value.trim(),
+  email: emailInput.value.trim(),
+  phone: phoneInput.value.trim(),
+  balance: 0,
+  createdAt: serverTimestamp(),
+  referrer: referrerId || null, // save who referred them (optional)
+});
+if (referrerId) {
+  const referrerRef = doc(db, "users", referrerId);
+  const refSnap = await getDoc(referrerRef);
+  if (refSnap.exists()) {
+    const currentRefBalance = refSnap.data().balance || 0;
+    await updateDoc(referrerRef, {
+      balance: currentRefBalance + 1700 // 🎉 reward the referrer ₦100
+    });
+  }
+}
 
       successMsg.textContent = "✅ Account created successfully! A verification email has been sent. Redirecting...";
 
       registerForm.reset();
 
+      // Redirect after delay (optional)
       setTimeout(() => {
         window.location.href = "login.html";
       }, 3500);
@@ -363,17 +327,17 @@ onMessage(messaging, (payload) => {
       submitBtn.disabled = false;
     }
   });
-</script>
-
+  </script>
+<!-- OneSignal Integration -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/firebase-messaging-sw.js')
-    .then(function(registration) {
-      console.log('✅ Service Worker registered:', registration);
-    }).catch(function(err) {
-      console.error('🚫 Service Worker registration failed:', err);
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "934a0c87-9dcd-4a96-9727-789deec17f0c",
     });
-  }
+  });
 </script>
+</body>
 </body>
 </html>
