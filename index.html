@@ -200,7 +200,7 @@ const messaging = getMessaging(app);
 Notification.requestPermission().then(permission => {
   if (permission === 'granted') {
     getToken(messaging, {
-      vapidKey: "fHsi1ISSyJsqRtfLmkX1rpDlGDakMm86mkCcGYVAycU"
+      vapidKey: "BBjM84hs7i_R5p01fppKfL2OoePDzivea_UgWJbNPSdLuYj2wlBq7wv-H1xzi6CEr9C3gWW0SZ4oKuVQOJz4PO8"
     })
     .then((currentToken) => {
       if (currentToken) {
