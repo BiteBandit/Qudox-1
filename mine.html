@@ -148,7 +148,7 @@ const auth = getAuth(app);
 let currentUser = null;
 let mined = 0;
 let minedToday = 0;
-const DAILY_LIMIT = 5000;
+const DAILY_LIMIT = 7000;
 
 const minedDisplay = document.getElementById("minedAmount");
 const coin = document.getElementById("coin");
@@ -202,8 +202,8 @@ coin.addEventListener("click", () => {
     return;
   }
 
-  mined += 2;
-  minedToday += 2;
+  mined += 5;
+  minedToday += 5;
   minedDisplay.textContent = `₦${mined.toLocaleString()}`;
   coinSound.currentTime = 0;
   coinSound.play();
