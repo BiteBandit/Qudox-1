@@ -246,39 +246,39 @@ header {
 
   // Listen for logged in user
   onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const userRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userRef);
+  if (user) {
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
 
-      if (!userSnap.exists()) {
-        // New user — set balance to ₦3,000
-        await setDoc(userRef, {
+    if (!userSnap.exists()) {
+      // New user — set balance to ₦3,000
+      await setDoc(userRef, {
+        balance: 3000,
+        createdAt: Date.now(),
+      });
+      balanceDisplay.textContent = "₦3,000.00";
+    } else {
+      // Existing user
+      const data = userSnap.data();
+      let balance = data.balance ?? 0;
+
+      // Force balance to ₦3,000 if it's 0 or missing
+      if (!balance || balance === 0) {
+        balance = 3000;
+        await updateDoc(userRef, {
           balance: 3000,
           createdAt: Date.now(),
         });
-        balanceDisplay.textContent = "₦3,000.00";
-      } else {
-        // User exists
-        const data = userSnap.data();
-        let balance = data.balance ?? 0;
-
-        // If balance is undefined or 0 and no "createdAt", give ₦3,000
-        if (balance === 0 && !data.createdAt) {
-          balance = 3000;
-          await updateDoc(userRef, {
-            balance: 3000,
-            createdAt: Date.now(),
-          });
-        }
-
-        // Show balance
-        balanceDisplay.textContent = `₦${balance.toLocaleString()}.00`;
       }
-    } else {
-      // No user — redirect to login
-      window.location.href = "login.html";
+
+      // Show balance
+      balanceDisplay.textContent = `₦${balance.toLocaleString()}.00`;
     }
-  });
+  } else {
+    // Not logged in — redirect
+    window.location.href = "login.html";
+  }
+});
 </script>
 <!-- OneSignal Push Notification -->
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
