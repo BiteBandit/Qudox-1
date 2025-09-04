@@ -1,388 +1,314 @@
-<!DOCTYPE html>  <html lang="en">  
-<head>  
-  <meta charset="UTF-8" />  
-  <title>QUDOX Sign Up</title>  
-  <meta name="viewport" content="width=device-width, initial-scale=1" />  
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">  
-  <style>  
-    * {  
-      box-sizing: border-box;  
-    }  
-    body {  
-      margin: 0;  
-      min-height: 100vh;  
-      background: #0e0e0e;  
-      color: #00ffea;  
-      font-family: 'Share Tech Mono', monospace;  
-      display: flex;  
-      justify-content: center;  
-      align-items: center;  
-      padding: 20px;  
-    }  .register {  
-  background: #111;  
-  padding: 30px 40px;  
-  border-radius: 10px;  
-  width: 360px;  
-  box-shadow: 0 0 15px #00ffea88, 0 0 40px #00ffea22;  
-  position: relative;  
-}  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>QUDOX Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #0e0e0e;
+      color: #00ffea;
+      font-family: 'Share Tech Mono', monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
 
-.glitch {  
-  font-size: 28px;  
-  color: #00ffea;  
-  text-align: center;  
-  position: relative;  
-  animation: glitch 1s infinite;  
-}  
+    .login {
+      background: #111;
+      padding: 30px 40px;
+      border-radius: 10px;
+      width: 360px;
+      box-shadow: 0 0 15px #00ffea88, 0 0 40px #00ffea22;
+      position: relative;
+    }
 
-@keyframes glitch {  
-  0% { text-shadow: 2px 0 red, -2px 0 blue; }  
-  20% { text-shadow: -2px 2px red, 2px -2px blue; }  
-  40% { text-shadow: 2px -2px red, -2px 2px blue; }  
-  60% { text-shadow: -2px -2px red, 2px 2px blue; }  
-  80% { text-shadow: 2px 2px red, -2px -2px blue; }  
-  100% { text-shadow: -2px 0 red, 2px 0 blue; }  
-}  
+    .glitch {
+      font-size: 28px;
+      color: #00ffea;
+      text-align: center;
+      position: relative;
+      animation: glitch 1s infinite;
+    }
 
-h4 {  
-  text-align: center;  
-  color: #ccc;  
-  margin-bottom: 25px;  
-}  
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 red, -2px 0 blue; }
+      20% { text-shadow: -2px 2px red, 2px -2px blue; }
+      40% { text-shadow: 2px -2px red, -2px 2px blue; }
+      60% { text-shadow: -2px -2px red, 2px 2px blue; }
+      80% { text-shadow: 2px 2px red, -2px -2px blue; }
+      100% { text-shadow: -2px 0 red, 2px 0 blue; }
+    }
 
-form {  
-  display: flex;  
-  flex-direction: column;  
-  gap: 15px;  
-}  
+    h4 {
+      text-align: center;
+      color: #ccc;
+      margin-bottom: 25px;
+    }
 
-.form__field {  
-  position: relative;  
-}  
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
 
-input[type="text"],  
-input[type="email"],  
-input[type="password"],  
-input[type="tel"] {  
-  width: 100%;  
-  padding: 10px 40px 10px 12px;  
-  background: #1a1a1a;  
-  border: 1.5px solid #00ffea66;  
-  border-radius: 5px;  
-  color: #00ffea;  
-  font-size: 1rem;  
-  transition: border-color 0.3s ease;  
-}  
+    .form__field {
+      position: relative;
+    }
 
-input:focus {  
-  border-color: #00ffea;  
-  outline: none;  
-}  
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 40px 10px 12px;
+      background: #1a1a1a;
+      border: 1.5px solid #00ffea66;
+      border-radius: 5px;
+      color: #00ffea;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
 
-.eye-toggle {  
-  position: absolute;  
-  right: 12px;  
-  top: 35%;  
-  transform: translateY(-50%);  
-  cursor: pointer;  
-  font-size: 18px;  
-  user-select: none;  
-  color: #00ffea;  
-}  
+    input:focus {
+      border-color: #00ffea;
+      outline: none;
+    }
 
-button {  
-  padding: 12px;  
-  background: #00ffea;  
-  color: #000;  
-  font-weight: bold;  
-  border: none;  
-  border-radius: 5px;  
-  cursor: pointer;  
-  font-size: 1rem;  
-  transition: background 0.3s ease;  
-  animation: glitch 1s infinite;  
-}  
+    .eye-toggle {
+      position: absolute;
+      right: 12px;
+      top: 35%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 18px;
+      user-select: none;
+      color: #00ffea;
+    }
 
-button:hover {  
-  background: #02e8dd;  
-}  
+    .forgot-password {
+      text-align: right;
+      font-size: 0.85rem;
+      margin-top: -10px;
+      margin-bottom: 10px;
+    }
 
-.error-msg {  
-  color: #ff4c4c;  
-  font-size: 0.8rem;  
-  min-height: 18px;  
-}  
+    .forgot-password a {
+      color: #00ffea;
+      text-decoration: underline;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
 
-.success-msg {  
-  color: #00ffae;  
-  font-size: 0.9rem;  
-  text-align: center;  
-}  
+    .forgot-password a:hover {
+      color: #00ffe0;
+    }
 
-.redirect-login {  
-  text-align: center;  
-  margin-top: 15px;  
-  font-size: 0.85rem;  
-}  
+    button {
+      padding: 12px;
+      background: #00ffea;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+      animation: glitch 1s infinite;
+    }
 
-.redirect-login a {  
-  color: #00ffea;  
-  text-decoration: underline;  
-}  
+    button:hover {
+      background: #02e8dd;
+    }
 
-.redirect-login a:hover {  
-  color: #00ffe0;  
-}
+    .error-msg {
+      color: #ff4c4c;
+      font-size: 0.8rem;
+      min-height: 18px;
+    }
 
-  </style>  
-</head>  
-<body>  
-  <div class="register">  
-    <h2 class="glitch">Join QUDOX</h2>  
-    <h4>Create Your Account and Start Mining NGN</h4>  
-    <form id="registerForm" novalidate>  
-      <div class="form__field">  
-        <input id="username" type="text" placeholder="Username" required />  
-        <div class="error-msg" id="usernameError"></div>  
-      </div>  
-      <div class="form__field">  
-        <input id="email" type="email" placeholder="Email (example@mail.com)" required />  
-        <div class="error-msg" id="emailError"></div>  
-      </div>  
-      <div class="form__field">  
-        <input id="phone" type="tel" placeholder="Phone Number" required />  
-        <div class="error-msg" id="phoneError"></div>  
-      </div>  
-      <div class="form__field">  
-        <input id="password" type="password" placeholder="Password" required />  
-        <span class="eye-toggle" id="togglePassword">👁️</span>  
-        <div class="error-msg" id="passwordError"></div>  
-      </div>  
-      <div class="form__field">  
-        <input id="confirmPassword" type="password" placeholder="Confirm Password" required />  
-        <span class="eye-toggle" id="toggleConfirmPassword">👁️</span>  
-        <div class="error-msg" id="confirmPasswordError"></div>  
-      </div>  
-      <div class="error-msg" id="firebaseError"></div>  
-      <button type="submit" id="submitBtn">Register</button>  
-      <div class="success-msg" id="successMsg"></div>  
-    </form>  
-    <div class="redirect-login">  
-      Already have an account? <a href="Login.html">Log In</a>  
-    </div>  
-  </div>    <script type="module">  
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";  
-  import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";  
-  import {
-  getFirestore,
-  doc,
-  setDoc,
-  serverTimestamp,
-  getDoc,
-  updateDoc,
-  query,
-  collection,
-  where,
-  getDocs,
-  increment
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-  const firebaseConfig = {  
-    apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",  
-  authDomain: "qudox-c4ffe.firebaseapp.com",  
-  projectId: "qudox-c4ffe",  
-  storageBucket: "qudox-c4ffe.firebasestorage.app",  
-  messagingSenderId: "499837322901",  
-  appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"  
-};  
-  
-  const app = initializeApp(firebaseConfig);  
-  const auth = getAuth(app);  
-  const db = getFirestore(app);  
-const urlParams = new URLSearchParams(window.location.search);  
-const referralCodeFromUrl = urlParams.get("ref") || null;  
-  
-  const registerForm = document.getElementById("registerForm");  
-  const usernameInput = document.getElementById("username");  
-  const emailInput = document.getElementById("email");  
-  const phoneInput = document.getElementById("phone");  
-  const passwordInput = document.getElementById("password");  
-  const confirmPasswordInput = document.getElementById("confirmPassword");  
-  const togglePassword = document.getElementById("togglePassword");  
-  const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");  
-  const firebaseError = document.getElementById("firebaseError");  
-  const successMsg = document.getElementById("successMsg");  
-  
-  const usernameError = document.getElementById("usernameError");  
-  const emailError = document.getElementById("emailError");  
-  const phoneError = document.getElementById("phoneError");  
-  const passwordError = document.getElementById("passwordError");  
-  const confirmPasswordError = document.getElementById("confirmPasswordError");  
-    
-  // Generate a unique referral code that doesn't exist in Firestore  
-async function generateUniqueReferralCode(length = 8) {  
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';  
-  
-  while (true) {  
-    let code = '';  
-    for (let i = 0; i < length; i++) {  
-      code += chars.charAt(Math.floor(Math.random() * chars.length));  
-    }  
-  
-    // Check if this code exists in Firestore  
-    const q = query(collection(db, "users"), where("referralCode", "==", code));  
-    const snapshot = await getDocs(q);  
-  
-    if (snapshot.empty) {  
-      return code; // ✅ Unique code found  
-    }  
-    // Else loop again and try another code  
-  }  
-}  
-  
-  function toggleVisibility(input, toggleIcon) {  
-    if (input.type === "password") {  
-      input.type = "text";  
-      toggleIcon.textContent = "🙈";  
-    } else {  
-      input.type = "password";  
-      toggleIcon.textContent = "👁️";  
-    }  
-  }  
-  
-  togglePassword.addEventListener("click", () => toggleVisibility(passwordInput, togglePassword));  
-  toggleConfirmPassword.addEventListener("click", () => toggleVisibility(confirmPasswordInput, toggleConfirmPassword));  
-  
-  function validateEmail(email) {  
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);  
-  }  
-  
-  function validatePhone(phone) {  
-    return /^\+?\d{7,15}$/.test(phone);  
-  }  
-  
-  function clearErrors() {  
-    usernameError.textContent = "";  
-    emailError.textContent = "";  
-    phoneError.textContent = "";  
-    passwordError.textContent = "";  
-    confirmPasswordError.textContent = "";  
-    firebaseError.textContent = "";  
-    successMsg.textContent = "";  
-  }  
-  
-  registerForm.addEventListener("submit", async (e) => {  
-    e.preventDefault();  
-    clearErrors();  
-  
-    let valid = true;  
-  
-    if (usernameInput.value.trim().length < 3) {  
-      usernameError.textContent = "Username must be at least 3 characters.";  
-      valid = false;  
-    }  
-  
-    if (!validateEmail(emailInput.value.trim())) {  
-      emailError.textContent = "Please enter a valid email.";  
-      valid = false;  
-    }  
-  
-    if (!validatePhone(phoneInput.value.trim())) {  
-      phoneError.textContent = "Please enter a valid phone number.";  
-      valid = false;  
-    }  
-  
-    if (passwordInput.value.length < 6) {  
-      passwordError.textContent = "Password must be at least 6 characters.";  
-      valid = false;  
-    }  
-  
-    if (passwordInput.value !== confirmPasswordInput.value) {  
-      confirmPasswordError.textContent = "Passwords do not match.";  
-      valid = false;  
-    }  
-  
-    if (!valid) return;  
-  
-    // Disable submit to prevent multiple clicks  
-    const submitBtn = document.getElementById("submitBtn");  
-    submitBtn.disabled = true;  
-  
-    try {  
-      const userCredential = await createUserWithEmailAndPassword(auth, emailInput.value.trim(), passwordInput.value);  
-      const user = userCredential.user;  
-  
-      // Send email verification  
-      await sendEmailVerification(user);  
-  
-// Always generate a truly unique referral code  
-const userReferralCode = await generateUniqueReferralCode(8);  
-  
-// Reference to the user document (document ID is user.uid)  
-const userDocRef = doc(db, "users", user.uid);  
-  
-  
-      // Save user info in Firestore  
-      await setDoc(doc(db, "users", user.uid), {  
-  username: usernameInput.value.trim(),  
-  email: emailInput.value.trim(),  
-  phone: phoneInput.value.trim(),  
-  balance: 0,  
-  createdAt: serverTimestamp(),  
-  referralCode: userReferralCode,  
-  referredBy: referralCodeFromUrl,  // Store the referrer custom code  
-  referrals: 0,  
-});  
-  
-// If referredBy exists, update the referrer document atomically  
-if (referralCodeFromUrl) {  
-  // Query the users collection for a document with referralCode == referralCodeFromUrl  
-  const referrerQuery = query(  
-    collection(db, "users"),  
-    where("referralCode", "==", referralCodeFromUrl)  
-  );  
-  const referrerSnapshot = await getDocs(referrerQuery);  
-  
-  if (!referrerSnapshot.empty) {  
-    const referrerDoc = referrerSnapshot.docs[0];  
-  
-    // Update the referrer’s data with +1 referral and +1700 balance  
-    await updateDoc(referrerDoc.ref, {  
-      referrals: increment(1),  
-      balance: increment(1700),  
-    });  
-  } else {  
-    // Handle invalid referral code here (optional)  
-    console.warn("Referral code not found:", referralCodeFromUrl);  
-  }  
-}  
-  
-      successMsg.textContent = "✅ Account created successfully! A verification email has been sent. Redirecting...";  
-  
-      registerForm.reset();  
-  
-      // Redirect after delay (optional)  
-      setTimeout(() => {  
-        window.location.href = "login.html";  
-      }, 3500);  
-  
-    } catch (error) {  
-      if (error.code === "auth/email-already-in-use") {  
-        firebaseError.textContent = "Registration failed: This email is already registered. Please log in or use a different email.";  
-      } else {  
-        firebaseError.textContent = "❌ " + error.message;  
-      }  
-      console.error(error);  
-    } finally {  
-      submitBtn.disabled = false;  
-    }  
-  });  
-  </script>  <!-- OneSignal Integration -->  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>  <script>  
-  window.OneSignalDeferred = window.OneSignalDeferred || [];  
-  OneSignalDeferred.push(async function(OneSignal) {  
-    await OneSignal.init({  
-      appId: "934a0c87-9dcd-4a96-9727-789deec17f0c",  
-    });  
-  });  
-</script>  </body>  
-</body>  
+    .success-msg {
+      color: #00ffae;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .redirect-signup {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 0.85rem;
+    }
+
+    .redirect-signup a {
+      color: #00ffea;
+      text-decoration: underline;
+    }
+
+    .redirect-signup a:hover {
+      color: #00ffe0;
+    }
+  </style>
+</head>
+<body>
+  <div class="login">
+    <h2 class="glitch">Welcome Back</h2>
+    <h4>Log in to your qudox account</h4>
+    <form id="loginForm" novalidate>
+      <div class="form__field">
+        <input id="email" type="email" placeholder="Email (example@mail.com)" required />
+        <div class="error-msg" id="emailError"></div>
+      </div>
+      <div class="form__field">
+        <input id="password" type="password" placeholder="Password" required />
+        <span class="eye-toggle" id="togglePassword">👁️</span>
+        <div class="error-msg" id="passwordError"></div>
+      </div>
+      <div class="forgot-password">
+        <a href="Forgot-password.html">Forgot password?</a>
+      </div>
+      <div class="error-msg" id="loginError"></div>
+      <button type="submit" id="submitBtn">Log In</button>
+      <div class="success-msg" id="successMsg"></div>
+    </form>
+    <div class="redirect-signup">
+      Don't have an account? <a href="register.html">Sign Up</a>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+<script>
+  // Firebase config - wrap in an object correctly
+  const firebaseConfig = {
+    apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
+    authDomain: "qudox-c4ffe.firebaseapp.com",
+    projectId: "qudox-c4ffe",
+    storageBucket: "qudox-c4ffe.appspot.com",
+    messagingSenderId: "499837322901",
+    appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  // DOM Elements
+  const loginForm = document.getElementById('loginForm');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const emailError = document.getElementById('emailError');
+  const passwordError = document.getElementById('passwordError');
+  const firebaseError = document.getElementById('loginError'); // Use your login error div
+  const successMsg = document.getElementById('successMsg');
+  const submitBtn = document.getElementById('submitBtn');
+  const togglePasswordBtn = document.getElementById('togglePassword');
+
+  // Toggle password visibility
+  togglePasswordBtn.addEventListener('click', () => {
+    const type = passwordInput.type === 'password' ? 'text' : 'password';
+    passwordInput.type = type;
+    togglePasswordBtn.textContent = type === 'password' ? '👁️' : '🙈';
+  });
+
+  // Clear errors on input
+  emailInput.addEventListener('input', () => {
+    emailError.textContent = '';
+    firebaseError.textContent = '';
+    successMsg.textContent = '';
+  });
+  passwordInput.addEventListener('input', () => {
+    passwordError.textContent = '';
+    firebaseError.textContent = '';
+    successMsg.textContent = '';
+  });
+
+  // Email validation function
+  function isValidEmail(email) {
+    return /\S+@\S+\.\S+/.test(email);
+  }
+
+  // Handle login form submission
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    // Reset error messages
+    emailError.textContent = '';
+    passwordError.textContent = '';
+    firebaseError.textContent = '';
+    successMsg.textContent = '';
+
+    // Basic validation
+    if (!email) {
+      emailError.textContent = 'Please enter your email.';
+      return;
+    } else if (!isValidEmail(email)) {
+      emailError.textContent = 'Please enter a valid email address.';
+      return;
+    }
+
+    if (!password) {
+      passwordError.textContent = 'Please enter your password.';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Logging in...';
+
+    auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
+      .then(() => auth.signInWithEmailAndPassword(email, password))
+      .then(({ user }) => {
+        if (!user.emailVerified) {
+          firebaseError.textContent = 'Email not verified. Please verify your email first.';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Log In';
+          return auth.signOut();
+        }
+        successMsg.textContent = 'Login successful! Redirecting...';
+        setTimeout(() => {
+          window.location.href = 'Dashboard.html';
+        }, 1500);
+      })
+       .catch((error) => {
+  console.log('Firebase error code:', error.code);
+  console.log('Firebase error message:', error.message);
+
+  const errorMessages = {
+    'auth/user-not-found': 'This email is not registered.',
+    'auth/wrong-password': 'The password you entered is incorrect.',
+    'auth/invalid-email': 'Please enter a valid email address.',
+    'auth/too-many-requests': 'Too many login attempts. Please try again later.',
+    'auth/network-request-failed': 'Network error. Please check your connection.',
+    'auth/user-disabled': 'This user account has been disabled.',
+    'auth/invalid-login-credentials': 'Incorrect email or password.'  // Add this new one!
+  };
+
+  const message = errorMessages[error.code] || 'An unknown error occurred. Please try again.';
+  firebaseError.textContent = message;
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'Log In';
+});
+});
+
+  // Auto-login redirect if already logged in and email verified
+  auth.onAuthStateChanged(user => {
+    if (user && user.emailVerified) {
+      successMsg.textContent = `Welcome back, ${user.email}! Redirecting...`;
+      setTimeout(() => {
+        window.location.href = 'Dashboard.html';
+      }, 1500);
+    }
+  });
+</script>
+  </script>
+</body>
 </html>
