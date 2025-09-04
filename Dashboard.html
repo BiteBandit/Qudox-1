@@ -320,73 +320,81 @@ align-items: center;
 
   const balanceDisplay = document.getElementById("balance");
 
-  // --- Show premium alert ---
-  function hidePremiumAlert() {
-    document.getElementById("premiumAlert").style.display = "none";
-  }
+      // --- Show premium alert ---
+// Make the function global so it can be called from dynamically created button
+window.hidePremiumAlert = function() {
+  document.getElementById("premiumAlert").style.display = "none";
+};
 
-  function copyReferralLink() {
-    const link = document.getElementById("referralLink").href;
-    navigator.clipboard.writeText(link).then(() => {
+function copyReferralLink() {
+  const link = document.getElementById("referralLink").href;
+  navigator.clipboard.writeText(link)
+    .then(() => {
       const premiumAlert = document.getElementById("premiumAlert");
       const box = premiumAlert.querySelector(".box");
 
-      box.innerHTML = `
-        <h2>🔗 Referral Link Copied!</h2>
-        <p>Your referral link has been copied to clipboard. Share it with your friends to earn rewards!</p>
-        <button onclick="hidePremiumAlert()">Okay</button>
-      `;
+      // Update h2 and paragraph instead of replacing entire innerHTML
+      let title = box.querySelector("h2");
+      let message = box.querySelector("p");
+      let button = box.querySelector("button");
+
+      if (title) title.textContent = "🔗 Referral Link Copied!";
+      if (message) message.textContent = "Your referral link has been copied to clipboard. Share it with your friends to earn rewards!";
+      if (button) button.onclick = hidePremiumAlert;
+
       premiumAlert.style.display = "flex";
-    }).catch(() => {
+    })
+    .catch(() => {
       alert("Failed to copy referral link. Please copy manually.");
     });
-  }
+}
 
-  document.getElementById("copyReferralBtn").addEventListener("click", copyReferralLink);
+// Attach event listener
+document.getElementById("copyReferralBtn").addEventListener("click", copyReferralLink);
 
-  // --- Auth Listener ---
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const uid = user.uid;
-      const userRef = doc(db, "users", uid);
-      const userSnap = await getDoc(userRef);
+// --- Auth Listener ---
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const uid = user.uid;
+    const userRef = doc(db, "users", uid);
+    const userSnap = await getDoc(userRef);
 
-      let data;
-      if (!userSnap.exists()) {
-        // New user
-        data = { balance: 3000, referrals: 0, referralCode: uid, createdAt: Date.now() };
-        await setDoc(userRef, data);
-      } else {
-        data = userSnap.data();
-        if (!data.balance || data.balance === 0) {
-          data.balance = 3000;
-          await updateDoc(userRef, { balance: 3000, createdAt: Date.now() });
-        }
-      }
-
-      // Show balance
-      balanceDisplay.textContent = `₦${(data.balance ?? 0).toLocaleString()}.00`;
-
-      // --- Referral Code & Link ---
-      const referralCode = data.referralCode || uid;
-      const referralLink = `${window.location.origin}/register?ref=${referralCode}`;
-
-      const referralLinkElement = document.getElementById("referralLink");
-      if (referralLinkElement) {
-        referralLinkElement.textContent = referralLink;
-        referralLinkElement.href = referralLink;
-      }
-
-      const referralCountElement = document.getElementById("referralCount");
-      if (referralCountElement) {
-        referralCountElement.textContent = data.referrals || 0;
-      }
-
+    let data;
+    if (!userSnap.exists()) {
+      // New user
+      data = { balance: 3000, referrals: 0, referralCode: uid, createdAt: Date.now() };
+      await setDoc(userRef, data);
     } else {
-      // Not logged in — redirect
-      window.location.href = "login.html";
+      data = userSnap.data();
+      if (!data.balance || data.balance === 0) {
+        data.balance = 3000;
+        await updateDoc(userRef, { balance: 3000, createdAt: Date.now() });
+      }
     }
-  });
+
+    // Show balance
+    balanceDisplay.textContent = `₦${(data.balance ?? 0).toLocaleString()}.00`;
+
+    // --- Referral Code & Link ---
+    const referralCode = data.referralCode || uid;
+    const referralLink = `${window.location.origin}/register?ref=${referralCode}`;
+
+    const referralLinkElement = document.getElementById("referralLink");
+    if (referralLinkElement) {
+      referralLinkElement.textContent = referralLink;
+      referralLinkElement.href = referralLink;
+    }
+
+    const referralCountElement = document.getElementById("referralCount");
+    if (referralCountElement) {
+      referralCountElement.textContent = data.referrals || 0;
+    }
+
+  } else {
+    // Not logged in — redirect
+    window.location.href = "login.html";
+  }
+});
 </script>
 <!-- OneSignal Push Notification -->  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>  <script>  
   window.OneSignalDeferred = window.OneSignalDeferred || [];  
