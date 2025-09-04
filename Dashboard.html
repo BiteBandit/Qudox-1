@@ -289,69 +289,42 @@ align-items: center;
   feather.replace();  
 </script>  
   <script type="module">
-  // --- Firebase Setup ---
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+  // Import Firebase SDKs
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+  // Firebase config
   const firebaseConfig = {
-      apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
-      authDomain: "qudox-c4ffe.firebaseapp.com",
-      projectId: "qudox-c4ffe",
-      storageBucket: "qudox-c4ffe.firebasestorage.app",
-      messagingSenderId: "499837322901",
-      appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
-    };
+    apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
+    authDomain: "qudox-c4ffe.firebaseapp.com",
+    projectId: "qudox-c4ffe",
+    storageBucket: "qudox-c4ffe.appspot.com",
+    messagingSenderId: "499837322901",
+    appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
+  };
 
+  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // --- Load User Data ---
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      window.location.href = "/login.html"; // redirect if not logged in
-      return;
-    }
+  const balanceDisplay = document.getElementById("balance");
 
-    const uid = user.uid;
-    const userRef = doc(db, "users", uid);
-    const userSnap = await getDoc(userRef);
+  // --- Show premium alert ---
+  function hidePremiumAlert() {
+    document.getElementById("premiumAlert").style.display = "none";
+  }
 
-    if (!userSnap.exists()) {
-      alert("User data not found!");
-      return;
-    }
-
-    const data = userSnap.data();
-
-    // --- Show User Info ---
-    document.getElementById("userName").textContent = data.name || "User";
-    document.getElementById("userEmail").textContent = user.email;
-
-    // --- Referral Code & Link ---
-    const referralCode = data.referralCode || uid;
-    const referralLink = `${window.location.origin}/register?ref=${referralCode}`;
-
-    const referralLinkElement = document.getElementById("referralLink");
-    if (referralLinkElement) {
-      referralLinkElement.textContent = referralLink;
-      referralLinkElement.href = referralLink;
-    }
-
-    const referralCountElement = document.getElementById("referralCount");
-    if (referralCountElement) {
-      referralCountElement.textContent = data.referrals || 0;
-    }
-  });
-
-  // --- Logout Function ---
-  document.getElementById("logoutBtn").addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "/login.html";
-  });
-
-  // --- Copy Referral Link ---
   function copyReferralLink() {
     const link = document.getElementById("referralLink").href;
     navigator.clipboard.writeText(link).then(() => {
@@ -360,7 +333,7 @@ align-items: center;
 
       box.innerHTML = `
         <h2>🔗 Referral Link Copied!</h2>
-        <p>Your referral link has been copied. Share it with your friends to earn rewards!</p>
+        <p>Your referral link has been copied to clipboard. Share it with your friends to earn rewards!</p>
         <button onclick="hidePremiumAlert()">Okay</button>
       `;
       premiumAlert.style.display = "flex";
@@ -371,12 +344,50 @@ align-items: center;
 
   document.getElementById("copyReferralBtn").addEventListener("click", copyReferralLink);
 
-  function hidePremiumAlert() {
-    document.getElementById("premiumAlert").style.display = "none";
-  }
-  window.hidePremiumAlert = hidePremiumAlert; // make it global for button onclick
-</script>
+  // --- Auth Listener ---
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const uid = user.uid;
+      const userRef = doc(db, "users", uid);
+      const userSnap = await getDoc(userRef);
 
+      let data;
+      if (!userSnap.exists()) {
+        // New user
+        data = { balance: 3000, referrals: 0, referralCode: uid, createdAt: Date.now() };
+        await setDoc(userRef, data);
+      } else {
+        data = userSnap.data();
+        if (!data.balance || data.balance === 0) {
+          data.balance = 3000;
+          await updateDoc(userRef, { balance: 3000, createdAt: Date.now() });
+        }
+      }
+
+      // Show balance
+      balanceDisplay.textContent = `₦${(data.balance ?? 0).toLocaleString()}.00`;
+
+      // --- Referral Code & Link ---
+      const referralCode = data.referralCode || uid;
+      const referralLink = `${window.location.origin}/register?ref=${referralCode}`;
+
+      const referralLinkElement = document.getElementById("referralLink");
+      if (referralLinkElement) {
+        referralLinkElement.textContent = referralLink;
+        referralLinkElement.href = referralLink;
+      }
+
+      const referralCountElement = document.getElementById("referralCount");
+      if (referralCountElement) {
+        referralCountElement.textContent = data.referrals || 0;
+      }
+
+    } else {
+      // Not logged in — redirect
+      window.location.href = "login.html";
+    }
+  });
+</script>
 <!-- OneSignal Push Notification -->  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>  <script>  
   window.OneSignalDeferred = window.OneSignalDeferred || [];  
   OneSignalDeferred.push(async function(OneSignal) {  
