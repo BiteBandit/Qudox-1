@@ -1,294 +1,407 @@
-<!-- Save this as index.html --><!DOCTYPE html><html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Qudox Wallet Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/feather-icons"></script>
-  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
-  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Orbitron', sans-serif;
-    }body {
-  background-color: #0d0d0d;
-  color: white;
-  padding-bottom: 80px;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background: #111;
+<!-- Save this as index.html --><!DOCTYPE html><html lang="en">  <head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
+  <title>Qudox Wallet Dashboard</title>  
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">  
+  <script src="https://unpkg.com/feather-icons"></script>  
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>  
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>  
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>  
+  <style>  
+    * {  
+      margin: 0;  
+      padding: 0;  
+      box-sizing: border-box;  
+      font-family: 'Orbitron', sans-serif;  
+    }body {  
+  background-color: #0d0d0d;  
+  color: white;  
+  padding-bottom: 80px;  
+}  header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 20px;
+background: #111;
 }
 
 .logo {
-  font-size: 24px;
-  font-weight: bold;
-  position: relative;
-  color: #00ffcc;
-  overflow: hidden;
+font-size: 24px;
+font-weight: bold;
+position: relative;
+color: #00ffcc;
+overflow: hidden;
 }
 
 .logo::before,
 .glitch-btn::before {
-  content: attr(data-glitch);
-  position: absolute;
-  left: 2px;
-  top: 0;
-  color: #ff00ff;
-  opacity: 0.7;
-  animation: glitch 1.5s infinite linear alternate-reverse;
+content: attr(data-glitch);
+position: absolute;
+left: 2px;
+top: 0;
+color: #ff00ff;
+opacity: 0.7;
+animation: glitch 1.5s infinite linear alternate-reverse;
 }
 
 .glitch-btn::before {
-  top: 0;
-  left: 0;
-  color: #ff00ff;
-  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+top: 0;
+left: 0;
+color: #ff00ff;
+clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
 }
 
 @keyframes glitch {
-  0% { transform: translate(0); }
-  20% { transform: translate(-1px, 1px); }
-  40% { transform: translate(1px, -1px); }
-  60% { transform: translate(-2px, 2px); }
-  80% { transform: translate(2px, -2px); }
-  100% { transform: translate(0); }
+0% { transform: translate(0); }
+20% { transform: translate(-1px, 1px); }
+40% { transform: translate(1px, -1px); }
+60% { transform: translate(-2px, 2px); }
+80% { transform: translate(2px, -2px); }
+100% { transform: translate(0); }
 }
 
 .icons a i {
-  color: #00ffcc;
-  font-size: 22px;
-  margin-left: 16px;
+color: #00ffcc;
+font-size: 22px;
+margin-left: 16px;
 }
 
 .balance-card {
-  background: #1a1a1a;
-  margin: 20px;
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 4px 10px #00ffcc55;
+background: #1a1a1a;
+margin: 20px;
+padding: 20px;
+border-radius: 16px;
+box-shadow: 0 4px 10px #00ffcc55;
 }
 
 .balance-card h2 {
-  font-size: 18px;
-  color: #aaa;
+font-size: 18px;
+color: #aaa;
 }
 
 .balance {
-  font-size: 28px;
-  margin: 10px 0;
+font-size: 28px;
+margin: 10px 0;
 }
 
 .withdraw-btn {
-  background: #00ffcc;
-  color: black;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 10px;
-  position: relative;
+background: #00ffcc;
+color: black;
+padding: 10px 20px;
+border: none;
+border-radius: 8px;
+font-weight: bold;
+cursor: pointer;
+margin-top: 10px;
+position: relative;
 }
 
 .withdraw-btn.glitch-btn {
-  overflow: hidden;
+overflow: hidden;
 }
 
 .progress-bar {
-  background: #333;
-  border-radius: 8px;
-  overflow: hidden;
-  height: 10px;
-  margin-top: 16px;
+background: #333;
+border-radius: 8px;
+overflow: hidden;
+height: 10px;
+margin-top: 16px;
 }
 
 .progress-bar-fill {
-  height: 100%;
-  width: 65%;
-  background: #00ffcc;
+height: 100%;
+width: 65%;
+background: #00ffcc;
 }
 
 .action-buttons {
-  display: flex;
-  justify-content: space-around;
-  margin: 30px 20px;
-  flex-wrap: wrap;
-  gap: 16px;
+display: flex;
+justify-content: space-around;
+margin: 30px 20px;
+flex-wrap: wrap;
+gap: 16px;
 }
 
 .action a {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-decoration: none;
+text-align: center;
+display: flex;
+flex-direction: column;
+align-items: center;
+text-decoration: none;
 }
 
 .action a i {
-  background: #00ffcc;
-  padding: 15px;
-  border-radius: 50%;
-  color: black;
-  margin-bottom: 8px;
-  position: relative;
+background: #00ffcc;
+padding: 15px;
+border-radius: 50%;
+color: black;
+margin-bottom: 8px;
+position: relative;
 }
 
 .action a span {
-  font-size: 12px;
-  color: #ccc;
+font-size: 12px;
+color: #ccc;
 }
 
 .bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #111;
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
-  box-shadow: 0 -4px 10px #000;
-  z-index: 100;
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+background: #111;
+display: flex;
+justify-content: space-around;
+padding: 10px 0;
+box-shadow: 0 -4px 10px #000;
+z-index: 100;
 }
 
 .bottom-nav a i {
-  color: #00ffcc;
+color: #00ffcc;
 }
 
 .bottom-nav a.add {
-  background: #00ffcc;
-  padding: 10px;
-  border-radius: 50%;
-  color: black;
-  margin-top: -20px;
+background: #00ffcc;
+padding: 10px;
+border-radius: 50%;
+color: black;
+margin-top: -20px;
+}
+.referral-section {
+border-bottom: 2px solid white; /* underline with referral color */
+padding-bottom: 10px;
+margin-bottom: 20px;
+font-weight: 600;
+font-size: 1.1rem;
+}
+.referral-section p {
+margin: 0 0 8px 0;
+}
+.referral-section a {
+text-decoration: underline;
+font-weight: 700;
+font-size: 0.95rem;
+}
+.referral-section button {
+margin-top: 8px;
+padding: 8px 15px;
+border-radius: 6px;
+border: none;
+cursor: pointer;
+background: white;
+color: #000;
+font-weight: 700;
+transition: background-color 0.3s ease;
+}
+.referral-section button:hover {
+background-color: white;
+}
+#premiumAlert {
+position: fixed;
+top: 0; left: 0;
+width: 100%; height: 100%;
+background: rgba(0,0,0,0.85);
+z-index: 9999;
+display: none;
+justify-content: center;
+align-items: center;
 }
 
-  </style>
-</head>
-<body>  <header>
-    <div class="logo" data-glitch="Qudox">Qudox</div>
-    <div class="icons">
-      <a href="profile.html"><i data-feather="user"></i></a>
-    </div>
-  </header>  <section class="balance-card">
-    <h2>Available Balance</h2>
-    <div class="balance" id="balance">₦0.00</div>
-    <a href="withdraw.html">
-      <button class="withdraw-btn glitch-btn" data-glitch="Withdraw">Withdraw</button>
-    </a>
-    <div class="progress-bar">
-      <div class="progress-bar-fill"></div>
-    </div>
-  </section>  <section class="action-buttons">
-    <div class="action">
-      <a href="buy-QDX.html"><i data-feather="shopping-cart" class="glitch-btn" data-glitch=""></i><span>Buy QDX</span></a>
-    </div>
-    <div class="action">
-      <a href="mine.html"><i data-feather="play-circle" class="glitch-btn" data-glitch=""></i><span>Mine</span></a>
-    </div>
-    <div class="action">
-      <a href="airtime.html"><i data-feather="smartphone" class="glitch-btn" data-glitch=""></i><span>Airtime</span></a>
-    </div>
-    <div class="action">
-      <a href="data.html"><i data-feather="wifi" class="glitch-btn" data-glitch=""></i><span>Data</span></a>
-    </div>
-  </section>  <nav class="bottom-nav">
-    <a href="community.html"><i data-feather="credit-card"></i></a>
-    <a href="Referral.html"><i data-feather="users"></i></a>
-     <a href="about.html" class="about"><i data-feather="info"></i></a>
-    <a href="data.html"><i data-feather="bar-chart-2"></i></a>
-    <a href="profile.html"><i data-feather="user"></i></a>
-  </nav> 
-  <script>
-  feather.replace();
-</script>
-  <!-- Firebase SDKs -->
-<script type="module">
-  // Import Firebase SDKs
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import {
-    getAuth,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import {
-    getFirestore,
-    doc,
-    getDoc,
-    setDoc,
-    updateDoc
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+#premiumAlert .box {  
+  background: #1c1c1c;  
+  padding: 30px;  
+  border-radius: 12px;  
+  color: white;  
+  text-align: center;  
+  max-width: 90%;  
+  box-shadow: 0 0 30px rgba(255,255,255,0.1);  
+}  
 
-  // Your Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
-    authDomain: "qudox-c4ffe.firebaseapp.com",
-    projectId: "qudox-c4ffe",
-    storageBucket: "qudox-c4ffe.appspot.com",
-    messagingSenderId: "499837322901",
-    appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
-  };
+#premiumAlert .box h2 {  
+  font-size: 1.4rem;  
+  margin-bottom: 15px;  
+}  
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+#premiumAlert .box p {  
+  font-size: 0.95rem;  
+  margin-bottom: 20px;  
+}  
 
-  const balanceDisplay = document.getElementById("balance");
+#premiumAlert .box button {  
+  padding: 10px 20px;  
+  border: none;  
+  background: #378f7b;  
+  color: white;  
+  border-radius: 8px;  
+  cursor: pointer;  
+}
 
-  // Listen for logged in user
-  onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    const userRef = doc(db, "users", user.uid);
-    const userSnap = await getDoc(userRef);
+  </style>  
+</head>  
+<body>  <header>  
+    <div class="logo" data-glitch="Qudox">Qudox</div>  
+    <div class="icons">  
+      <a href="profile.html"><i data-feather="user"></i></a>  
+    </div>  
+  </header>  <section class="balance-card">  
+    <h2>Available Balance</h2>  
+    <div class="balance" id="balance">₦0.00</div>  
+    <a href="withdraw.html">  
+      <button class="withdraw-btn glitch-btn" data-glitch="Withdraw">Withdraw</button>  
+    </a>  
+    <div class="progress-bar">  
+      <div class="progress-bar-fill"></div>  
+    </div>  
+  </section>  <section class="action-buttons">  
+    <div class="action">  
+      <a href="buy-QDX.html"><i data-feather="shopping-cart" class="glitch-btn" data-glitch=""></i><span>Buy QDX</span></a>  
+    </div>  
+    <div class="action">  
+      <a href="mine.html"><i data-feather="play-circle" class="glitch-btn" data-glitch=""></i><span>Mine</span></a>  
+    </div>  
+    <div class="action">  
+      <a href="airtime.html"><i data-feather="smartphone" class="glitch-btn" data-glitch=""></i><span>Airtime</span></a>  
+    </div>  
+    <div class="action">  
+      <a href="data.html"><i data-feather="wifi" class="glitch-btn" data-glitch=""></i><span>Data</span></a>  
+    </div>  
+  </section>  <nav class="bottom-nav">  
+    <a href="community.html"><i data-feather="credit-card"></i></a>  
+    <a href="Referral.html"><i data-feather="users"></i></a>  
+     <a href="about.html" class="about"><i data-feather="info"></i></a>  
+    <a href="data.html"><i data-feather="bar-chart-2"></i></a>  
+    <a href="profile.html"><i data-feather="user"></i></a>  
+  </nav>      <div class="referral-section" style="text-align:center; margin: 20px auto; max-width: 350px; color: #00ffcc;">  
+    <h3 style="text-decoration: underline; margin-bottom: 12px;">Referrer System</h3>  
+  <a href="#" id="referralLink" target="_blank" style="word-break: break-all; color: #00ffcc;"></a>  
+  <button id="copyReferralBtn" style="...">Copy Link</button>  
+  <p style="margin-top: 12px;">Total Referrals: <span id="referralCount">0</span></p>  
+</div>  
+  <div id="premiumAlert">  
+    <div class="box">  
+      <h2>🔒 Premium Access Only</h2>  
+      <p>This feature is available for premium users only. Upgrade your account to unlock exclusive tools and protection.</p>  
+      <button onclick="hidePremiumAlert()">Okay</button>  
+    </div>  
+  </div>  
+  <script>  
+  feather.replace();  
+</script>  
+  <!-- Firebase SDKs -->  
+<script type="module">  
+  // Import Firebase SDKs  
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";  
+  import {  
+    getAuth,  
+    onAuthStateChanged  
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";  
+  import {  
+    getFirestore,  
+    doc,  
+    getDoc,  
+    setDoc,  
+    updateDoc  
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";  // Your Firebase config
+const firebaseConfig = {
+apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
+authDomain: "qudox-c4ffe.firebaseapp.com",
+projectId: "qudox-c4ffe",
+storageBucket: "qudox-c4ffe.appspot.com",
+messagingSenderId: "499837322901",
+appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
+};
 
-    if (!userSnap.exists()) {
-      // New user — set balance to ₦3,000
-      await setDoc(userRef, {
-        balance: 3000,
-        createdAt: Date.now(),
-      });
-      balanceDisplay.textContent = "₦3,000.00";
-    } else {
-      // Existing user
-      const data = userSnap.data();
-      let balance = data.balance ?? 0;
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-      // Force balance to ₦3,000 if it's 0 or missing
-      if (!balance || balance === 0) {
-        balance = 3000;
-        await updateDoc(userRef, {
-          balance: 3000,
-          createdAt: Date.now(),
-        });
-      }
+const balanceDisplay = document.getElementById("balance");
 
-      // Show balance
-      balanceDisplay.textContent = `₦${balance.toLocaleString()}.00`;
-    }
-  } else {
-    // Not logged in — redirect
-    window.location.href = "login.html";
-  }
+// Listen for logged in user
+onAuthStateChanged(auth, async (user) => {
+if (user) {
+const userRef = doc(db, "users", user.uid);
+const userSnap = await getDoc(userRef);
+
+if (!userSnap.exists()) {  
+  // New user — set balance to ₦3,000  
+  await setDoc(userRef, {  
+    balance: 3000,  
+    createdAt: Date.now(),  
+  });  
+  balanceDisplay.textContent = "₦3,000.00";  
+} else {  
+  // Existing user  
+  const data = userSnap.data();  
+  let balance = data.balance ?? 0;  
+
+  // Force balance to ₦3,000 if it's 0 or missing  
+  if (!balance || balance === 0) {  
+    balance = 3000;  
+    await updateDoc(userRef, {  
+      balance: 3000,  
+      createdAt: Date.now(),  
+    });  
+  }  
+
+  // Show balance  
+  balanceDisplay.textContent = `₦${balance.toLocaleString()}.00`;  
+}
+
+} else {
+// Not logged in — redirect
+window.location.href = "login.html";
+}
 });
+    // --- Referral Code & Link ---  
+const referralCode = data.referralCode || uid; // use saved code or fallback to uid  
+const referralLink = `${window.location.origin}/register?ref=${referralCode}`;  
+  
+const referralLinkElement = document.getElementById("referralLink");  
+if (referralLinkElement) {  
+  referralLinkElement.textContent = referralLink;  
+  referralLinkElement.href = referralLink;  
+}  
+  
+const referralCountElement = document.getElementById("referralCount");  
+if (referralCountElement) {  
+  referralCountElement.textContent = data.referrals || 0;  
+}  
+function copyReferralLink() {  
+  const link = document.getElementById("referralLink").href;  
+  navigator.clipboard.writeText(link).then(() => {  
+    // Instead of alert, show the premium alert modal but customize text  
+    const premiumAlert = document.getElementById("premiumAlert");  
+    const box = premiumAlert.querySelector(".box");  
+  
+    // Change the content temporarily  
+    box.innerHTML = `  
+      <h2>🔗 Referral Link Copied!</h2>  
+      <p>Your referral link has been copied to clipboard. Share it with your friends to earn rewards!</p>  
+      <button onclick="hidePremiumAlert()">Okay</button>  
+    `;  
+  
+    premiumAlert.style.display = "flex";  
+  }).catch(() => {  
+    alert("Failed to copy referral link. Please copy manually.");  
+  });  
+}  
+  
+document.getElementById("copyReferralBtn").addEventListener("click", copyReferralLink);  
+  
+function hidePremiumAlert() {  
+  document.getElementById("premiumAlert").style.display = "none";  
+}  
 </script>
-<!-- OneSignal Push Notification -->
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "934a0c87-9dcd-4a96-9727-789deec17f0c",
-    });
-  });
-</script>
-  </body>
+
+<!-- OneSignal Push Notification -->  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>  <script>  
+  window.OneSignalDeferred = window.OneSignalDeferred || [];  
+  OneSignalDeferred.push(async function(OneSignal) {  
+    await OneSignal.init({  
+      appId: "934a0c87-9dcd-4a96-9727-789deec17f0c",  
+    });  
+  });  
+</script>    </body>  
 </html>
