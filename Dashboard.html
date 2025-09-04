@@ -296,14 +296,20 @@ align-items: center;
     getAuth,  
     onAuthStateChanged  
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";  
-  import {  
-    getFirestore,  
-    doc,  
-    getDoc,  
-    setDoc,  
-    updateDoc  
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";  // Your Firebase config
-const firebaseConfig = {
+  import {
+  getFirestore,
+  doc,
+  setDoc,
+  serverTimestamp,
+  getDoc,
+  updateDoc,
+  query,
+  collection,
+  where,
+  getDocs,
+  increment
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+  const firebaseConfig = {
 apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
 authDomain: "qudox-c4ffe.firebaseapp.com",
 projectId: "qudox-c4ffe",
