@@ -236,10 +236,54 @@ align-items: center;
   border-radius: 8px;  
   cursor: pointer;  
 }
+/* 🔥 Loading Screen */
+#loading-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: #0d0d0d;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  color: #00ffcc;
+  font-size: 18px;
+}
 
+.loader {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.loader span {
+  width: 15px;
+  height: 15px;
+  background: #00ffcc;
+  border-radius: 50%;
+  animation: bounce 0.6s infinite alternate;
+}
+
+.loader span:nth-child(2) { animation-delay: 0.2s; }
+.loader span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  to { transform: translateY(-10px); opacity: 0.7; }
+}
   </style>  
 </head>  
-<body>  <header>  
+<body> 
+<!-- Loading Screen -->
+<div id="loading-screen">
+  <div class="loader">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <p>Loading Qudox...</p>
+</div>
+<header>  
     <div class="logo" data-glitch="Qudox">Qudox</div>  
     <div class="icons">  
       <a href="profile.html"><i data-feather="user"></i></a>  
@@ -371,7 +415,27 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     // Show balance
-    balanceDisplay.textContent = `₦${(data.balance ?? 0).toLocaleString()}.00`;
+    animateBalance(data.balance ?? 0);
+
+function animateBalance(targetAmount) {
+    let balanceElement = document.getElementById("balance");
+    let current = 0;
+    let increment = Math.ceil(targetAmount / 100); // smooth speed
+    let interval = setInterval(() => {
+      current += increment;
+      if (current >= targetAmount) {
+        current = targetAmount;
+        clearInterval(interval);
+      }
+      balanceElement.textContent = `₦${current.toLocaleString()}.00`;
+    }, 20); // speed of animation
+  }
+
+  // 🔥 Call this function once you get the balance from Firestore
+  // Replace this line in your Firebase code:
+  // balanceDisplay.textContent = `₦${(data.balance ?? 0).toLocaleString()}.00`;
+  // With this:
+  // animateBalance(data.balance ?? 0);
 
     // --- Referral Code & Link ---
     const referralCode = data.referralCode || uid;
@@ -390,7 +454,7 @@ onAuthStateChanged(auth, async (user) => {
 
   } else {
     // Not logged in — redirect
-    window.location.href = "index.html";
+    window.location.href = "#";
   }
 });
 </script>
@@ -401,5 +465,14 @@ onAuthStateChanged(auth, async (user) => {
       appId: "934a0c87-9dcd-4a96-9727-789deec17f0c",  
     });  
   });  
-</script>    </body>  
+</script>  
+<script>
+  // 🔥 Keep loading screen for at least 6 seconds
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      document.getElementById("loading-screen").style.display = "none";
+    }, 6000); // 6000ms = 6 seconds
+  });
+</script>
+</body>  
 </html>
