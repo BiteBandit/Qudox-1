@@ -417,25 +417,6 @@ onAuthStateChanged(auth, async (user) => {
     // Show balance
     animateBalance(data.balance ?? 0);
 
-function animateBalance(targetAmount) {
-    let balanceElement = document.getElementById("balance");
-    let current = 0;
-    let increment = Math.ceil(targetAmount / 100); // smooth speed
-    let interval = setInterval(() => {
-      current += increment;
-      if (current >= targetAmount) {
-        current = targetAmount;
-        clearInterval(interval);
-      }
-      balanceElement.textContent = `₦${current.toLocaleString()}.00`;
-    }, 20); // speed of animation
-  }
-
-  // 🔥 Call this function once you get the balance from Firestore
-  // Replace this line in your Firebase code:
-  // balanceDisplay.textContent = `₦${(data.balance ?? 0).toLocaleString()}.00`;
-  // With this:
-  // animateBalance(data.balance ?? 0);
 
     // --- Referral Code & Link ---
     const referralCode = data.referralCode || uid;
@@ -454,9 +435,23 @@ function animateBalance(targetAmount) {
 
   } else {
     // Not logged in — redirect
-    window.location.href = "#";
+    window.location.href = "index.html";
   }
 });
+// 🔥 Place this OUTSIDE of onAuthStateChanged
+function animateBalance(targetAmount) {
+  let balanceElement = document.getElementById("balance");
+  let current = 0;
+  let increment = Math.ceil(targetAmount / 100); 
+  let interval = setInterval(() => {
+    current += increment;
+    if (current >= targetAmount) {
+      current = targetAmount;
+      clearInterval(interval);
+    }
+    balanceElement.textContent = `₦${current.toLocaleString()}.00`;
+  }, 20);
+}
 </script>
 <!-- OneSignal Push Notification -->  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>  <script>  
   window.OneSignalDeferred = window.OneSignalDeferred || [];  
@@ -471,7 +466,7 @@ function animateBalance(targetAmount) {
   window.addEventListener("load", () => {
     setTimeout(() => {
       document.getElementById("loading-screen").style.display = "none";
-    }, 6000); // 6000ms = 6 seconds
+    }, 3000); // 6000ms = 6 seconds
   });
 </script>
 </body>  
