@@ -197,40 +197,43 @@ transition: background-color 0.3s ease;
 .referral-section button:hover {
 background-color: white;
 }
-/* 🔔 Custom Notification Styles */
+/* 🔔 Custom Notification Styles - Center Top */
 .notification {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 12px 18px;
-  border-radius: 8px;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-30px);
+  padding: 14px 24px;
+  border-radius: 10px;
   font-weight: bold;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  font-size: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   opacity: 0;
-  transform: translateY(30px);
   transition: all 0.4s ease-in-out;
   z-index: 10000;
   pointer-events: none;
   color: white;
+  max-width: 90%;
+  text-align: center;
 }
 
 .notification.show {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(-50%) translateY(0);
 }
 
 /* 🎨 Notification Colors */
 .notification.success {
-  background: #00ffcc; /* Greenish */
+  background: #00ffcc;
   color: black;
 }
 
 .notification.error {
-  background: #ff3b30; /* Red */
+  background: #ff3b30;
 }
 
 .notification.warning {
-  background: #ffcc00; /* Yellow */
+  background: #ffcc00;
   color: black;
 }
 /* 🔥 Loading Screen */
@@ -318,14 +321,27 @@ background-color: white;
   <a href="#" id="referralLink" target="_blank" style="word-break: break-all; color: #00ffcc;"></a>  
   <button id="copyReferralBtn" style="...">Copy Link</button>  
   <p style="margin-top: 12px;">Total Referrals: <span id="referralCount">0</span></p>  
-</div>  
-  <div id="premiumAlert">  
-    <div class="box">  
-      <h2>🔒 Premium Access Only</h2>  
-      <p>This feature is available for premium users only. Upgrade your account to unlock exclusive tools and protection.</p>  
-      <button onclick="hidePremiumAlert()">Okay</button>  
-    </div>  
-  </div>  
+</div> 
+
+<div id="rewardPopup" style="
+  display:none; 
+  position:fixed; 
+  top:50%; left:50%; 
+  transform:translate(-50%, -50%);
+  background:#1a1a1a; 
+  padding:20px; 
+  border-radius:12px; 
+  box-shadow:0 0 20px #00ffcc; 
+  text-align:center; 
+  color:white;
+  z-index:10000;">
+  <h3>🎁 Daily Login Reward!</h3>
+  <p id="rewardText"></p>
+  <button onclick="document.getElementById('rewardPopup').style.display='none'" style="
+    margin-top:10px; padding:8px 16px; border:none; border-radius:6px; background:#00ffcc; color:black; font-weight:bold;">
+    OK
+  </button>
+</div>
   <script>  
   feather.replace();  
 </script>  
@@ -395,7 +411,6 @@ function copyReferralLink() {
 // Attach event listener
 document.getElementById("copyReferralBtn").addEventListener("click", copyReferralLink);
 
-// --- Auth Listener ---
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     const uid = user.uid;
@@ -403,21 +418,48 @@ onAuthStateChanged(auth, async (user) => {
     const userSnap = await getDoc(userRef);
 
     let data;
+    const now = new Date();
+    const today = now.toDateString(); // to compare days only
+
     if (!userSnap.exists()) {
       // New user
-      data = { balance: 3000, referrals: 0, referralCode: uid, createdAt: Date.now() };
+      data = {
+        balance: 3000,
+        referrals: 0,
+        referralCode: uid,
+        createdAt: Date.now(),
+        lastLogin: today,
+        streak: 1
+      };
       await setDoc(userRef, data);
+      showRewardPopup(3000, 1);
     } else {
       data = userSnap.data();
-      if (!data.balance || data.balance === 0) {
-        data.balance = 3000;
-        await updateDoc(userRef, { balance: 3000, createdAt: Date.now() });
+
+      let reward = 0;
+      let streak = data.streak || 1;
+      let lastLogin = data.lastLogin || "";
+
+      if (lastLogin !== today) {
+        // New day
+        streak = (new Date(lastLogin).toDateString() === new Date(Date.now() - 86400000).toDateString()) 
+          ? streak + 1 : 1;
+        reward = 200 * streak; // Reward grows with streak
+
+        await updateDoc(userRef, {
+          balance: (data.balance || 0) + reward,
+          lastLogin: today,
+          streak
+        });
+        data.balance = (data.balance || 0) + reward;
+        data.streak = streak;
+
+        showRewardPopup(reward, streak);
       }
     }
 
     // Show balance
     animateBalance(data.balance ?? 0);
-
 
     // --- Referral Code & Link ---
     const referralCode = data.referralCode || uid;
@@ -435,7 +477,6 @@ onAuthStateChanged(auth, async (user) => {
     }
 
   } else {
-    // Not logged in — redirect
     window.location.href = "index.html";
   }
 });
@@ -465,6 +506,12 @@ window.showNotification = function(message, type = "success") {
     notification.classList.remove("show");
   }, 3000);
 };
+
+function showRewardPopup(amount, streak) {
+    const popup = document.getElementById("rewardPopup");
+    document.getElementById("rewardText").innerText = `You earned ₦${amount} today! 🔥 (Streak: ${streak} days)`;
+    popup.style.display = "block";
+  }
 </script>
 <!-- OneSignal Push Notification -->  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>  <script>  
   window.OneSignalDeferred = window.OneSignalDeferred || [];  
