@@ -271,9 +271,45 @@ background-color: white;
 @keyframes bounce {
   to { transform: translateY(-10px); opacity: 0.7; }
 }
+/* 🔥 Announcement Bar (fixed, no sliding) */
+#announcementBar {
+  background: #00ffcc;
+  color: black;
+  padding: 8px;
+  text-align: left; /* keep text flowing from left */
+  font-weight: bold;
+  font-size: 14px;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  white-space: nowrap;
+}
+
+/* 🔥 Only the text inside scrolls */
+#announcementBar span {
+  display: inline-block;
+  padding-left: 100%; /* Start off screen */
+  animation: scrollText 12s linear infinite;
+}
+
+/* 🔥 Scroll animation for text only */
+@keyframes scrollText {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+/* 🔥 Prevent content from hiding under banner */
+body {
+  margin-top: 40px;
+}
+
   </style>  
 </head>  
 <body> 
+<div id="announcementBar"><span>Loading announcements...</span></div>
 <!-- Loading Screen -->
 <div id="loading-screen">
   <div class="loader">
@@ -432,7 +468,9 @@ onAuthStateChanged(auth, async (user) => {
         streak: 1
       };
       await setDoc(userRef, data);
-      showRewardPopup(3000, 1);
+      setTimeout(() => {
+  showRewardPopup(3000, 1);
+}, 5000);
     } else {
       data = userSnap.data();
 
@@ -454,7 +492,9 @@ onAuthStateChanged(auth, async (user) => {
         data.balance = (data.balance || 0) + reward;
         data.streak = streak;
 
-        showRewardPopup(reward, streak);
+        setTimeout(() => {
+  showRewardPopup(reward, streak);
+}, 5000); // show popup 5 seconds later
       }
     }
 
@@ -477,7 +517,7 @@ onAuthStateChanged(auth, async (user) => {
     }
 
   } else {
-    window.location.href = "index.html";
+    window.location.href = "#";
   }
 });
 // 🔥 Place this OUTSIDE of onAuthStateChanged
@@ -512,6 +552,36 @@ function showRewardPopup(amount, streak) {
     document.getElementById("rewardText").innerText = `You earned ₦${amount} today! 🔥 (Streak: ${streak} days)`;
     popup.style.display = "block";
   }
+  
+  const names = ["Joshua", "Mercy", "Grace", "Emeka", "Aisha", "David", "Fatima", "Tunde", "Mazi", "Collins", "Chinedu",
+"Blessing", "Samuel", "Precious", "Ifeanyi", "Ada", "Joseph", "Ngozi", "Chiamaka", "Michael", "Esther",
+"Peter", "Chinonso", "Elizabeth", "Paul", "Uche", "Ruth", "Victor", "Oluwaseun", "John", "Mary",
+"Chukwudi", "Faith", "Joy", "Oluwatobi", "Daniel", "Chioma", "Sophie", "Ezekiel", "Patience", "Hassan",
+"Ahmed", "Ibrahim", "Ngozika", "Ijeoma", "Rachel", "Benjamin", "Oluwafemi", "Chika", "Naomi", "Anthony",
+"Olufemi", "Esther", "Peter", "Adenike", "Solomon", "Chukwuemeka", "Deborah", "Favour", "Samuel", "Victoria",
+"Moses", "Halima", "Olamide", "Chukwu", "Linda", "Emmanuel", "Bukola", "Sarah", "Chisom", "Isaac",
+"Rachael", "Okafor", "Oluwaseyi", "Daniela", "Benjamin", "Chidimma", "Hope", "Matthew", "Obinna", "Gloria",
+"Patrick", "Amaka", "Nathaniel", "Ujunwa", "Stephen", "Ngozichukwuka", "Esther", "Michael", "Chioma", "Olajide",
+"Faith", "Sarah", "Chijioke", "Rebecca", "Victor", "Adanna", "Tosin", "Adaeze", "Charles", "Funke",
+"Timothy", "Chibuzor", "Angel", "Isaiah", "Oluwatomisin", "Kelechi", "Lilian", "Daniel", "Chikaima", "Joyce",
+"Henry", "Oluwakemi", "Efe", "Naomi", "Gabriel", "Chinwe", "Peter", "Obioma", "Andrew", "Blessing",
+"Samuel", "Chisara", "Mariam", "Chijioke", "Amanda", "Oluwaseun", "Hannah", "Joseph", "Chioma", "Emmanuel",
+"Felicity", "Chuka", "Precious", "David", "Oluwadamilola", "Patience", "Uchechi", "Esther", "Ifeanyi", "Victoria",
+"Michael", "Chidiebere", "Faith", "Emeka", "Ruth", "Tolu", "Chinenye", "Joshua", "Ngozi", "Benjamin", "Chioma"];
+  const announcementText = document.querySelector("#announcementBar span");
+
+  function updateAnnouncement() {
+    const minAmount = 30000;
+    const maxAmount = 350000;
+    const randomName = names[Math.floor(Math.random() * names.length)];
+    const amount = Math.floor(Math.random() * (maxAmount - minAmount + 1)) + minAmount;
+
+    announcementText.textContent = `${randomName} just withdrew ₦${amount.toLocaleString()} 🔥`;
+  }
+
+  updateAnnouncement();
+  setInterval(updateAnnouncement, 12000);
+
 </script>
 <!-- OneSignal Push Notification -->  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>  <script>  
   window.OneSignalDeferred = window.OneSignalDeferred || [];  
