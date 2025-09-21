@@ -458,8 +458,9 @@ onAuthStateChanged(auth, async (user) => {
     const today = now.toDateString(); // to compare days only
 
     if (!userSnap.exists()) {
-  data = {
-    balance: 3000,
+  // 🆕 New user gets ₦3000 bonus
+  const newUser = {
+    balance: 3000, // starting bonus
     referrals: 0,
     referralCode: uid,
     createdAt: Date.now(),
@@ -467,15 +468,20 @@ onAuthStateChanged(auth, async (user) => {
     streak: 1
   };
 
-  await setDoc(userRef, data);
-  animateBalance(3000);  // <-- show immediately
+  await setDoc(userRef, newUser);  // Save to Firestore
+  data = newUser;
 
+  // ✅ Show ₦3000 immediately
+  animateBalance(3000);
+
+  // 🎁 Show popup after 5 sec
   setTimeout(() => {
     showRewardPopup(3000, 1);
   }, 5000);
-
 } else {
+  // 🔄 Existing user
   data = userSnap.data();
+    }
   
 
       let reward = 0;
