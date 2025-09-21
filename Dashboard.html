@@ -1,28 +1,31 @@
-<!-- Save this as index.html --><!DOCTYPE html><html lang="en">  <head>      <meta charset="UTF-8" />    
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>    
-  <title>Qudox Wallet Dashboard</title>    
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">    
-  <script src="https://unpkg.com/feather-icons"></script>    
-  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>    
-  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>    
-  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>    
-  <style>    
-    * {    
-      margin: 0;    
-      padding: 0;    
-      box-sizing: border-box;    
-      font-family: 'Orbitron', sans-serif;    
-    }body {    
-  background-color: #0d0d0d;    
-  color: white;    
-  padding-bottom: 80px;    
-}  header {  
-display: flex;  
-justify-content: space-between;  
-align-items: center;  
-padding: 20px;  
-background: #111;  
-}  .logo {
+<!-- Save this as index.html --><!DOCTYPE html><html lang="en">  <head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
+  <title>Qudox Wallet Dashboard</title>  
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">  
+  <script src="https://unpkg.com/feather-icons"></script>  
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>  
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>  
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>  
+  <style>  
+    * {  
+      margin: 0;  
+      padding: 0;  
+      box-sizing: border-box;  
+      font-family: 'Orbitron', sans-serif;  
+    }body {  
+  background-color: #0d0d0d;  
+  color: white;  
+  padding-bottom: 80px;  
+}  header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 20px;
+background: #111;
+}
+
+.logo {
 font-size: 24px;
 font-weight: bold;
 position: relative;
@@ -166,7 +169,7 @@ color: black;
 margin-top: -20px;
 }
 .referral-section {
-border-bottom: 2px solid white; /* underline with referral color /
+border-bottom: 2px solid white; /* underline with referral color */
 padding-bottom: 10px;
 margin-bottom: 20px;
 font-weight: 600;
@@ -194,363 +197,367 @@ transition: background-color 0.3s ease;
 .referral-section button:hover {
 background-color: white;
 }
-/ 🔔 Custom Notification Styles - Center Top */
+/* 🔔 Custom Notification Styles - Center Top */
 .notification {
-position: fixed;
-top: 20px;
-left: 50%;
-transform: translateX(-50%) translateY(-30px);
-padding: 14px 24px;
-border-radius: 10px;
-font-weight: bold;
-font-size: 16px;
-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-opacity: 0;
-transition: all 0.4s ease-in-out;
-z-index: 10000;
-pointer-events: none;
-color: white;
-max-width: 90%;
-text-align: center;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-30px);
+  padding: 14px 24px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: all 0.4s ease-in-out;
+  z-index: 10000;
+  pointer-events: none;
+  color: white;
+  max-width: 90%;
+  text-align: center;
 }
 
 .notification.show {
-opacity: 1;
-transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* 🎨 Notification Colors */
 .notification.success {
-background: #00ffcc;
-color: black;
+  background: #00ffcc;
+  color: black;
 }
 
 .notification.error {
-background: #ff3b30;
+  background: #ff3b30;
 }
 
 .notification.warning {
-background: #ffcc00;
-color: black;
+  background: #ffcc00;
+  color: black;
 }
 /* 🔥 Loading Screen */
 #loading-screen {
-position: fixed;
-top: 0; left: 0;
-width: 100%; height: 100%;
-background: #0d0d0d;
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-z-index: 9999;
-color: #00ffcc;
-font-size: 18px;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: #0d0d0d;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  color: #00ffcc;
+  font-size: 18px;
 }
 
 .loader {
-display: flex;
-gap: 10px;
-margin-bottom: 10px;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .loader span {
-width: 15px;
-height: 15px;
-background: #00ffcc;
-border-radius: 50%;
-animation: bounce 0.6s infinite alternate;
+  width: 15px;
+  height: 15px;
+  background: #00ffcc;
+  border-radius: 50%;
+  animation: bounce 0.6s infinite alternate;
 }
 
 .loader span:nth-child(2) { animation-delay: 0.2s; }
 .loader span:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes bounce {
-to { transform: translateY(-10px); opacity: 0.7; }
+  to { transform: translateY(-10px); opacity: 0.7; }
 }
-/* 🔥 Announcement Bar (fixed, no sliding) /
+/* 🔥 Announcement Bar (fixed, no sliding) */
 #announcementBar {
-background: #00ffcc;
-color: black;
-padding: 8px;
-text-align: left; / keep text flowing from left */
-font-weight: bold;
-font-size: 14px;
-overflow: hidden;
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-z-index: 1000;
-white-space: nowrap;
+  background: #00ffcc;
+  color: black;
+  padding: 8px;
+  text-align: left; /* keep text flowing from left */
+  font-weight: bold;
+  font-size: 14px;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  white-space: nowrap;
 }
 
-/* 🔥 Only the text inside scrolls /
+/* 🔥 Only the text inside scrolls */
 #announcementBar span {
-display: inline-block;
-padding-left: 100%; / Start off screen */
-animation: scrollText 12s linear infinite;
+  display: inline-block;
+  padding-left: 100%; /* Start off screen */
+  animation: scrollText 12s linear infinite;
 }
 
 /* 🔥 Scroll animation for text only */
 @keyframes scrollText {
-0% { transform: translateX(0); }
-100% { transform: translateX(-100%); }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
 }
 
 /* 🔥 Prevent content from hiding under banner */
 body {
-margin-top: 40px;
+  margin-top: 40px;
 }
 
-  </style>    
-</head>    
-<body>   
-<div id="announcementBar"><span>Loading announcements...</span></div>  
-<!-- Loading Screen -->  
-<div id="loading-screen">  
-  <div class="loader">  
-    <span></span>  
-    <span></span>  
-    <span></span>  
-  </div>  
-  <p>Loading Qudox...</p>  
-</div>  
-<!-- 🔔 Notification -->  
-<div id="notification" class="notification"></div>  
-<header>    
-    <div class="logo" data-glitch="Qudox">Qudox</div>    
-    <div class="icons">    
-      <a href="profile.html"><i data-feather="user"></i></a>    
-    </div>    
-  </header>  <section class="balance-card">    
-    <h2>Available Balance</h2>    
-    <div class="balance" id="balance">₦0.00</div>    
-    <a href="withdraw.html">    
-      <button class="withdraw-btn glitch-btn" data-glitch="Withdraw">Withdraw</button>    
-    </a>    
-    <div class="progress-bar">    
-      <div class="progress-bar-fill"></div>    
-    </div>    
-  </section>  <section class="action-buttons">    
-    <div class="action">    
-      <a href="buy-QDX.html"><i data-feather="shopping-cart" class="glitch-btn" data-glitch=""></i><span>Buy QDX</span></a>    
-    </div>    
-    <div class="action">    
-      <a href="mine.html"><i data-feather="play-circle" class="glitch-btn" data-glitch=""></i><span>Mine</span></a>    
-    </div>    
-    <div class="action">    
-      <a href="airtime.html"><i data-feather="smartphone" class="glitch-btn" data-glitch=""></i><span>Airtime</span></a>    
-    </div>    
-    <div class="action">    
-      <a href="data.html"><i data-feather="wifi" class="glitch-btn" data-glitch=""></i><span>Data</span></a>    
-    </div>    
-  </section>  <nav class="bottom-nav">    
-    <a href="community.html"><i data-feather="credit-card"></i></a>    
-       <a href="about.html" class="about"><i data-feather="info"></i></a>    
-    <a href="data.html"><i data-feather="bar-chart-2"></i></a>    
-  </nav>      <div class="referral-section" style="text-align:center; margin: 20px auto; max-width: 350px; color: #00ffcc;">    
-    <h3 style="text-decoration: underline; margin-bottom: 12px;">Referrer System</h3>    
-  <a href="#" id="referralLink" target="_blank" style="word-break: break-all; color: #00ffcc;"></a>    
-  <button id="copyReferralBtn" style="...">Copy Link</button>    
-  <p style="margin-top: 12px;">Total Referrals: <span id="referralCount">0</span></p>    
-</div>   <div id="rewardPopup" style="  
-  display:none;   
-  position:fixed;   
-  top:50%; left:50%;   
-  transform:translate(-50%, -50%);  
-  background:#1a1a1a;   
-  padding:20px;   
-  border-radius:12px;   
-  box-shadow:0 0 20px #00ffcc;   
-  text-align:center;   
-  color:white;  
-  z-index:10000;">  
-  <h3>🎁 Daily Login Reward!</h3>  
-  <p id="rewardText"></p>  
-  <button onclick="document.getElementById('rewardPopup').style.display='none'" style="  
-    margin-top:10px; padding:8px 16px; border:none; border-radius:6px; background:#00ffcc; color:black; font-weight:bold;">  
-    OK  
-  </button>  
-</div>  
-  <script>    
-  feather.replace();    
-</script>    
-  <script type="module">  
-  // Import Firebase SDKs  
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";  
-  import {  
-    getAuth,  
-    onAuthStateChanged  
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";  
-  import {  
-    getFirestore,  
-    doc,  
-    getDoc,  
-    setDoc,  
-    updateDoc  
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";  // Firebase config
-const firebaseConfig = {
-apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
-authDomain: "qudox-c4ffe.firebaseapp.com",
-projectId: "qudox-c4ffe",
-storageBucket: "qudox-c4ffe.appspot.com",
-messagingSenderId: "499837322901",
-appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
-};
+  </style>  
+</head>  
+<body> 
+<div id="announcementBar"><span>Loading announcements...</span></div>
+<!-- Loading Screen -->
+<div id="loading-screen">
+  <div class="loader">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <p>Loading Qudox...</p>
+</div>
+<!-- 🔔 Notification -->
+<div id="notification" class="notification"></div>
+<header>  
+    <div class="logo" data-glitch="Qudox">Qudox</div>  
+    <div class="icons">  
+      <a href="profile.html"><i data-feather="user"></i></a>  
+    </div>  
+  </header>  <section class="balance-card">  
+    <h2>Available Balance</h2>  
+    <div class="balance" id="balance">₦0.00</div>  
+    <a href="withdraw.html">  
+      <button class="withdraw-btn glitch-btn" data-glitch="Withdraw">Withdraw</button>  
+    </a>  
+    <div class="progress-bar">  
+      <div class="progress-bar-fill"></div>  
+    </div>  
+  </section>  <section class="action-buttons">  
+    <div class="action">  
+      <a href="buy-QDX.html"><i data-feather="shopping-cart" class="glitch-btn" data-glitch=""></i><span>Buy QDX</span></a>  
+    </div>  
+    <div class="action">  
+      <a href="mine.html"><i data-feather="play-circle" class="glitch-btn" data-glitch=""></i><span>Mine</span></a>  
+    </div>  
+    <div class="action">  
+      <a href="airtime.html"><i data-feather="smartphone" class="glitch-btn" data-glitch=""></i><span>Airtime</span></a>  
+    </div>  
+    <div class="action">  
+      <a href="data.html"><i data-feather="wifi" class="glitch-btn" data-glitch=""></i><span>Data</span></a>  
+    </div>  
+  </section>  <nav class="bottom-nav">  
+    <a href="community.html"><i data-feather="credit-card"></i></a>  
+       <a href="about.html" class="about"><i data-feather="info"></i></a>  
+    <a href="data.html"><i data-feather="bar-chart-2"></i></a>  
+  </nav>      <div class="referral-section" style="text-align:center; margin: 20px auto; max-width: 350px; color: #00ffcc;">  
+    <h3 style="text-decoration: underline; margin-bottom: 12px;">Referrer System</h3>  
+  <a href="#" id="referralLink" target="_blank" style="word-break: break-all; color: #00ffcc;"></a>  
+  <button id="copyReferralBtn" style="...">Copy Link</button>  
+  <p style="margin-top: 12px;">Total Referrals: <span id="referralCount">0</span></p>  
+</div> 
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+<div id="rewardPopup" style="
+  display:none; 
+  position:fixed; 
+  top:50%; left:50%; 
+  transform:translate(-50%, -50%);
+  background:#1a1a1a; 
+  padding:20px; 
+  border-radius:12px; 
+  box-shadow:0 0 20px #00ffcc; 
+  text-align:center; 
+  color:white;
+  z-index:10000;">
+  <h3>🎁 Daily Login Reward!</h3>
+  <p id="rewardText"></p>
+  <button onclick="document.getElementById('rewardPopup').style.display='none'" style="
+    margin-top:10px; padding:8px 16px; border:none; border-radius:6px; background:#00ffcc; color:black; font-weight:bold;">
+    OK
+  </button>
+</div>
+  <script>  
+  feather.replace();  
+</script>  
+  <script type="module">
+  // Import Firebase SDKs
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const balanceDisplay = document.getElementById("balance");
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAtsUgFSLRl3efgiRTWUM-4SWu0NNTnnmY",
+    authDomain: "qudox-c4ffe.firebaseapp.com",
+    projectId: "qudox-c4ffe",
+    storageBucket: "qudox-c4ffe.appspot.com",
+    messagingSenderId: "499837322901",
+    appId: "1:499837322901:web:e5baca4d53b1bb6ca1fd9c"
+  };
 
-// --- Show premium alert ---
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
+  const balanceDisplay = document.getElementById("balance");
+
+      // --- Show premium alert ---
 // Make the function global so it can be called from dynamically created button
 window.hidePremiumAlert = function() {
-document.getElementById("premiumAlert").style.display = "none";
+  document.getElementById("premiumAlert").style.display = "none";
 };
 
 function copyReferralLink() {
-const link = document.getElementById("referralLink").href;
-navigator.clipboard.writeText(link)
+  const link = document.getElementById("referralLink").href;
+  navigator.clipboard.writeText(link)
 .then(() => {
-showNotification("Referral link copied!", "success");
+  showNotification("Referral link copied!", "success");
 })
 .catch(() => {
-showNotification("Failed to copy link.", "error");
+  showNotification("Failed to copy link.", "error");
 
-// Update h2 and paragraph instead of replacing entire innerHTML  
-  let title = box.querySelector("h2");  
-  let message = box.querySelector("p");  
-  let button = box.querySelector("button");  
+      // Update h2 and paragraph instead of replacing entire innerHTML
+      let title = box.querySelector("h2");
+      let message = box.querySelector("p");
+      let button = box.querySelector("button");
 
-  if (title) title.textContent = "🔗 Referral Link Copied!";  
-  if (message) message.textContent = "Your referral link has been copied to clipboard. Share it with your friends to earn rewards!";  
-  if (button) button.onclick = hidePremiumAlert;  
+      if (title) title.textContent = "🔗 Referral Link Copied!";
+      if (message) message.textContent = "Your referral link has been copied to clipboard. Share it with your friends to earn rewards!";
+      if (button) button.onclick = hidePremiumAlert;
 
-  premiumAlert.style.display = "flex";  
-})  
-.catch(() => {  
-  alert("Failed to copy referral link. Please copy manually.");  
-});
-
+      premiumAlert.style.display = "flex";
+    })
+    .catch(() => {
+      alert("Failed to copy referral link. Please copy manually.");
+    });
 }
 
 // Attach event listener
 document.getElementById("copyReferralBtn").addEventListener("click", copyReferralLink);
 
 onAuthStateChanged(auth, async (user) => {
-if (user) {
-const uid = user.uid;
-const userRef = doc(db, "users", uid);
-const userSnap = await getDoc(userRef);
+  if (user) {
+    const uid = user.uid;
+    const userRef = doc(db, "users", uid);
+    const userSnap = await getDoc(userRef);
 
-let data;  
-const now = new Date();  
-const today = now.toDateString(); // to compare days only  
+    let data;
+    const now = new Date();
+    const today = now.toDateString(); // to compare days only
 
-if (!userSnap.exists()) {  
-  // New user  
-  data = {  
-    balance: 3000,  
-    referrals: 0,  
-    referralCode: uid,  
-    createdAt: Date.now(),  
-    lastLogin: today,  
-    streak: 1  
-  };  
-  await setDoc(userRef, data);  
-  setTimeout(() => {
+if (!userSnap.exists()) {
+  // 🆕 New user
+  data = {
+    balance: 0,             // start at zero
+    referrals: 0,
+    referralCode: uid,
+    createdAt: Date.now(),
+    lastLogin: today,
+    streak: 1
+  };
 
-showRewardPopup(3000, 1);
-}, 5000);
+  await setDoc(userRef, data);
+
 } else {
-data = userSnap.data();
+  // 🔄 Existing user
+  data = userSnap.data();
 
-let reward = 0;  
-  let streak = data.streak || 1;  
-  let lastLogin = data.lastLogin || "";  
+  // 🔔 Daily login reward
+  let reward = 0;
+  let streak = data.streak || 1;
+  let lastLogin = data.lastLogin || "";
 
-  if (lastLogin !== today) {  
-    // New day  
-    streak = (new Date(lastLogin).toDateString() === new Date(Date.now() - 86400000).toDateString())   
-      ? streak + 1 : 1;  
-    reward = 500 * streak; // Reward grows with streak  
+  if (lastLogin !== today) {
+    // New day
+    streak = (new Date(lastLogin).toDateString() === new Date(Date.now() - 86400000).toDateString()) 
+      ? streak + 1 : 1;
+    reward = 200 * streak;
 
-    await updateDoc(userRef, {  
-      balance: (data.balance || 0) + reward,  
-      lastLogin: today,  
-      streak  
-    });  
-    data.balance = (data.balance || 0) + reward;  
-    data.streak = streak;  
+    await updateDoc(userRef, {
+      balance: (data.balance || 0) + reward,
+      lastLogin: today,
+      streak
+    });
 
+    data.balance = (data.balance || 0) + reward;
+    data.streak = streak;
+
+    // Show daily reward popup after 5 sec
     setTimeout(() => {
-
-showRewardPopup(reward, streak);
-}, 5000); // show popup 5 seconds later
+      showRewardPopup(reward, streak);
+    }, 5000);
+  }
 }
-}
-
-// Show balance  
-animateBalance(data.balance ?? 0);  
-
-// --- Referral Code & Link ---  
-const referralCode = data.referralCode || uid;  
-const referralLink = `${window.location.origin}/register?ref=${referralCode}`;  
-
-const referralLinkElement = document.getElementById("referralLink");  
-if (referralLinkElement) {  
-  referralLinkElement.textContent = referralLink;  
-  referralLinkElement.href = referralLink;  
-}  
-
-const referralCountElement = document.getElementById("referralCount");  
-if (referralCountElement) {  
-  referralCountElement.textContent = data.referrals || 0;  
+    // Show balance
+if (data.balance !== undefined) {
+  animateBalance(data.balance);
 }
 
-} else {
-window.location.href = "#";
-}
+    // --- Referral Code & Link ---
+    const referralCode = data.referralCode || uid;
+    const referralLink = `${window.location.origin}/register?ref=${referralCode}`;
+
+    const referralLinkElement = document.getElementById("referralLink");
+    if (referralLinkElement) {
+      referralLinkElement.textContent = referralLink;
+      referralLinkElement.href = referralLink;
+    }
+
+    const referralCountElement = document.getElementById("referralCount");
+    if (referralCountElement) {
+      referralCountElement.textContent = data.referrals || 0;
+    }
+
+  } else {
+    window.location.href = "#";
+  }
 });
 // 🔥 Place this OUTSIDE of onAuthStateChanged
 function animateBalance(targetAmount) {
-let balanceElement = document.getElementById("balance");
-let current = 0;
-let increment = Math.ceil(targetAmount / 100);
-let interval = setInterval(() => {
-current += increment;
-if (current >= targetAmount) {
-current = targetAmount;
-clearInterval(interval);
-}
-balanceElement.textContent = ₦${current.toLocaleString()}.00;
-}, 20);
+  let balanceElement = document.getElementById("balance");
+  let current = 0;
+  let increment = Math.ceil(targetAmount / 100); 
+  let interval = setInterval(() => {
+    current += increment;
+    if (current >= targetAmount) {
+      current = targetAmount;
+      clearInterval(interval);
+    }
+    balanceElement.textContent = `₦${current.toLocaleString()}.00`;
+  }, 20);
 }
 // 🔔 Show Notification
 window.showNotification = function(message, type = "success") {
-const notification = document.getElementById("notification");
-notification.className = "notification"; // Reset
-notification.classList.add(type);
-notification.textContent = message;
-notification.classList.add("show");
+  const notification = document.getElementById("notification");
+  notification.className = "notification"; // Reset
+  notification.classList.add(type);
+  notification.textContent = message;
+  notification.classList.add("show");
 
-setTimeout(() => {
-notification.classList.remove("show");
-}, 3000);
+  setTimeout(() => {
+    notification.classList.remove("show");
+  }, 3000);
 };
 
 function showRewardPopup(amount, streak) {
-const popup = document.getElementById("rewardPopup");
-document.getElementById("rewardText").innerText = You earned ₦${amount} today! 🔥 (Streak: ${streak} days);
-popup.style.display = "block";
-}
-
-const names = ["Joshua", "Mercy", "Grace", "Emeka", "Aisha", "David", "Fatima", "Tunde", "Mazi", "Collins", "Chinedu",
+    const popup = document.getElementById("rewardPopup");
+    document.getElementById("rewardText").innerText = `You earned ₦${amount} today! 🔥 (Streak: ${streak} days)`;
+    popup.style.display = "block";
+  }
+  
+  const names = ["Joshua", "Mercy", "Grace", "Emeka", "Aisha", "David", "Fatima", "Tunde", "Mazi", "Collins", "Chinedu",
 "Blessing", "Samuel", "Precious", "Ifeanyi", "Ada", "Joseph", "Ngozi", "Chiamaka", "Michael", "Esther",
 "Peter", "Chinonso", "Elizabeth", "Paul", "Uche", "Ruth", "Victor", "Oluwaseun", "John", "Mary",
 "Chukwudi", "Faith", "Joy", "Oluwatobi", "Daniel", "Chioma", "Sophie", "Ezekiel", "Patience", "Hassan",
@@ -565,37 +572,36 @@ const names = ["Joshua", "Mercy", "Grace", "Emeka", "Aisha", "David", "Fatima", 
 "Samuel", "Chisara", "Mariam", "Chijioke", "Amanda", "Oluwaseun", "Hannah", "Joseph", "Chioma", "Emmanuel",
 "Felicity", "Chuka", "Precious", "David", "Oluwadamilola", "Patience", "Uchechi", "Esther", "Ifeanyi", "Victoria",
 "Michael", "Chidiebere", "Faith", "Emeka", "Ruth", "Tolu", "Chinenye", "Joshua", "Ngozi", "Benjamin", "Chioma"];
-const announcementText = document.querySelector("#announcementBar span");
+  const announcementText = document.querySelector("#announcementBar span");
 
-function updateAnnouncement() {
-const minAmount = 30000;
-const maxAmount = 350000;
-const randomName = names[Math.floor(Math.random() * names.length)];
-const amount = Math.floor(Math.random() * (maxAmount - minAmount + 1)) + minAmount;
+  function updateAnnouncement() {
+    const minAmount = 30000;
+    const maxAmount = 350000;
+    const randomName = names[Math.floor(Math.random() * names.length)];
+    const amount = Math.floor(Math.random() * (maxAmount - minAmount + 1)) + minAmount;
 
-announcementText.textContent = `${randomName} just withdrew ₦${amount.toLocaleString()} 🔥`;
+    announcementText.textContent = `${randomName} just withdrew ₦${amount.toLocaleString()} 🔥`;
+  }
 
-}
+  updateAnnouncement();
+  setInterval(updateAnnouncement, 12000);
 
-updateAnnouncement();
-setInterval(updateAnnouncement, 12000);
-
-</script>  
-<!-- OneSignal Push Notification -->  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>  <script>    
-  window.OneSignalDeferred = window.OneSignalDeferred || [];    
-  OneSignalDeferred.push(async function(OneSignal) {    
-    await OneSignal.init({    
-      appId: "934a0c87-9dcd-4a96-9727-789deec17f0c",    
-    });    
-  });    
-</script>    
-<script>  
-  // 🔥 Keep loading screen for at least 6 seconds  
-  window.addEventListener("load", () => {  
-    setTimeout(() => {  
-      document.getElementById("loading-screen").style.display = "none";  
-    }, 3000); // 6000ms = 6 seconds  
+</script>
+<!-- OneSignal Push Notification -->  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>  <script>  
+  window.OneSignalDeferred = window.OneSignalDeferred || [];  
+  OneSignalDeferred.push(async function(OneSignal) {  
+    await OneSignal.init({  
+      appId: "934a0c87-9dcd-4a96-9727-789deec17f0c",  
+    });  
   });  
 </script>  
-</body>    
+<script>
+  // 🔥 Keep loading screen for at least 6 seconds
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      document.getElementById("loading-screen").style.display = "none";
+    }, 3000); // 6000ms = 6 seconds
+  });
+</script>
+</body>  
 </html>
