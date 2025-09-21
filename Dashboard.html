@@ -467,7 +467,14 @@ onAuthStateChanged(auth, async (user) => {
         lastLogin: today,
         streak: 1
       };
-      await setDoc(userRef, data);
+      await setDoc(userRef, {
+  balance: 3000,
+  referrals: 0,
+  referralCode: uid,
+  createdAt: Date.now(),
+  lastLogin: today,
+  streak: 1
+});
       setTimeout(() => {
   showRewardPopup(3000, 1);
 }, 5000);
@@ -499,7 +506,9 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     // Show balance
-    animateBalance(data.balance ?? 3000);
+    if (data.balance !== undefined) {
+  animateBalance(data.balance);
+    }
 
     // --- Referral Code & Link ---
     const referralCode = data.referralCode || uid;
@@ -523,7 +532,7 @@ onAuthStateChanged(auth, async (user) => {
 // 🔥 Place this OUTSIDE of onAuthStateChanged
 function animateBalance(targetAmount) {
   let balanceElement = document.getElementById("balance");
-  let current = 3000;
+  let current = 0;
   let increment = Math.ceil(targetAmount / 100); 
   let interval = setInterval(() => {
     current += increment;
