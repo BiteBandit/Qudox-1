@@ -457,29 +457,31 @@ onAuthStateChanged(auth, async (user) => {
     const now = new Date();
     const today = now.toDateString(); // to compare days only
 
-    if (!userSnap.exists()) {
-      // New user
-      data = {
-        balance: 3000,
-        referrals: 0,
-        referralCode: uid,
-        createdAt: Date.now(),
-        lastLogin: today,
-        streak: 1
-      };
-      await setDoc(userRef, {
-  balance: 3000,
-  referrals: 0,
-  referralCode: uid,
-  createdAt: Date.now(),
-  lastLogin: today,
-  streak: 1
-});
-      setTimeout(() => {
-  showRewardPopup(3000, 1);
-}, 5000);
-    } else {
-      data = userSnap.data();
+if (!userSnap.exists()) {
+  // 🆕 New user
+  data = {
+    balance: 3000,
+    referrals: 0,
+    referralCode: uid,
+    createdAt: Date.now(),
+    lastLogin: today,
+    streak: 1
+  };
+
+  await setDoc(userRef, data); // Save to Firestore
+
+  // ✅ Immediately show ₦3000 balance
+  animateBalance(data.balance);
+
+  // 🎁 Show daily reward popup after 5 sec
+  setTimeout(() => {
+    showRewardPopup(3000, 1);
+  }, 5000);
+
+} else {
+  // 🔄 Existing user
+  data = userSnap.data();
+    }
 
       let reward = 0;
       let streak = data.streak || 1;
