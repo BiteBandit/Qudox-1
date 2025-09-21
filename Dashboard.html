@@ -483,7 +483,7 @@ if (!userSnap.exists()) {
     // New day
     streak = (new Date(lastLogin).toDateString() === new Date(Date.now() - 86400000).toDateString()) 
       ? streak + 1 : 1;
-    reward = 200 * streak;
+    reward = 500 * streak;
 
     await updateDoc(userRef, {
       balance: (data.balance || 0) + reward,
