@@ -523,7 +523,7 @@ onAuthStateChanged(auth, async (user) => {
 // 🔥 Place this OUTSIDE of onAuthStateChanged
 function animateBalance(targetAmount) {
   let balanceElement = document.getElementById("balance");
-  let current = 0;
+  let current = 3000;
   let increment = Math.ceil(targetAmount / 100); 
   let interval = setInterval(() => {
     current += increment;
