@@ -457,8 +457,7 @@ onAuthStateChanged(auth, async (user) => {
     const now = new Date();
     const today = now.toDateString(); // to compare days only
 
-if (!userSnap.exists()) {
-  // 🆕 New user
+    if (!userSnap.exists()) {
   data = {
     balance: 3000,
     referrals: 0,
@@ -468,20 +467,16 @@ if (!userSnap.exists()) {
     streak: 1
   };
 
-  await setDoc(userRef, data); // Save to Firestore
+  await setDoc(userRef, data);
+  animateBalance(3000);  // <-- show immediately
 
-  // ✅ Immediately show ₦3000 balance
-  animateBalance(data.balance);
-
-  // 🎁 Show daily reward popup after 5 sec
   setTimeout(() => {
     showRewardPopup(3000, 1);
   }, 5000);
 
 } else {
-  // 🔄 Existing user
   data = userSnap.data();
-    }
+  
 
       let reward = 0;
       let streak = data.streak || 1;
@@ -508,9 +503,9 @@ if (!userSnap.exists()) {
     }
 
     // Show balance
-    if (data.balance !== undefined) {
+if (data.balance !== undefined) {
   animateBalance(data.balance);
-    }
+}
 
     // --- Referral Code & Link ---
     const referralCode = data.referralCode || uid;
@@ -611,4 +606,4 @@ function showRewardPopup(amount, streak) {
   });
 </script>
 </body>  
-</html>
+  </html>
