@@ -309,6 +309,30 @@ body {
   </style>  
 </head>  
 <body> 
+<!-- 🎁 New User Reward Popup -->
+<div id="newUserPopup" style="
+  display:none;
+  position:fixed;
+  top:50%; left:50%;
+  transform:translate(-50%, -50%);
+  background:#1a1a1a;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 0 20px #00ffcc;
+  text-align:center;
+  color:white;
+  z-index:10000;
+">
+  <h3>🎉 Welcome to Qudox!</h3>
+  <p>You have a new user bonus of <b>₦3000</b> waiting.</p>
+  <button id="claimRewardBtn" style="
+    margin-top:10px; padding:10px 18px;
+    border:none; border-radius:6px;
+    background:#00ffcc; color:black;
+    font-weight:bold; cursor:pointer;">
+    Claim Reward
+  </button>
+</div>
 <div id="announcementBar"><span>Loading announcements...</span></div>
 <!-- Loading Screen -->
 <div id="loading-screen">
@@ -457,53 +481,92 @@ onAuthStateChanged(auth, async (user) => {
     const now = new Date();
     const today = now.toDateString(); // to compare days only
 
-    if (!userSnap.exists()) {
-      // New user
-      data = {
-        balance: 3000,
-        referrals: 0,
-        referralCode: uid,
-        createdAt: Date.now(),
-        lastLogin: today,
-        streak: 1
-      };
-await setDoc(userRef, {
-  balance: 3000,
-  referrals: 0,
-  referralCode: uid,
-  createdAt: Date.now(),
-  lastLogin: today,
-  streak: 1
-});
-      setTimeout(() => {
-  showRewardPopup(3000, 1);
-}, 5000);
-    } else {
-      data = userSnap.data();
+if (!userSnap.exists()) {
+  // 🆕 New user
+  data = {
+    balance: 0,             // start at zero
+    referrals: 0,
+    referralCode: uid,
+    createdAt: Date.now(),
+    lastLogin: today,
+    streak: 1,
+    newUserReward: true     // flag for new user reward
+  };
 
-      let reward = 0;
-      let streak = data.streak || 1;
-      let lastLogin = data.lastLogin || "";
+  await setDoc(userRef, data);
 
-      if (lastLogin !== today) {
-        // New day
-        streak = (new Date(lastLogin).toDateString() === new Date(Date.now() - 86400000).toDateString()) 
-          ? streak + 1 : 1;
-        reward = 200 * streak; // Reward grows with streak
+  // 🎁 Show new user reward popup after 6 sec
+  setTimeout(() => {
+    document.getElementById("newUserPopup").style.display = "block";
+  }, 6000);
 
-        await updateDoc(userRef, {
-          balance: (data.balance || 0) + reward,
-          lastLogin: today,
-          streak
-        });
-        data.balance = (data.balance || 0) + reward;
-        data.streak = streak;
+  document.getElementById("claimRewardBtn").onclick = async () => {
+    const newBalance = 3000;
 
-        setTimeout(() => {
-  showRewardPopup(reward, streak);
-}, 5000); // show popup 5 seconds later
-      }
-    }
+    await updateDoc(userRef, {
+      balance: newBalance,
+      newUserReward: false   // disable reward once claimed
+    });
+
+    data.balance = newBalance;
+    animateBalance(data.balance);
+
+    showNotification("₦3000 new user reward claimed!", "success");
+    document.getElementById("newUserPopup").style.display = "none";
+  };
+
+} else {
+  // 🔄 Existing user
+  data = userSnap.data();
+
+  // 🎁 If they still haven’t claimed their new user reward
+  if (data.newUserReward) {
+    setTimeout(() => {
+      document.getElementById("newUserPopup").style.display = "block";
+    }, 6000);
+
+    document.getElementById("claimRewardBtn").onclick = async () => {
+      const newBalance = (data.balance || 0) + 3000;
+
+      await updateDoc(userRef, {
+        balance: newBalance,
+        newUserReward: false
+      });
+
+      data.balance = newBalance;
+      animateBalance(data.balance);
+
+      showNotification("₦3000 new user reward claimed!", "success");
+      document.getElementById("newUserPopup").style.display = "none";
+    };
+  }
+
+  // 🔔 Daily login reward
+  let reward = 0;
+  let streak = data.streak || 1;
+  let lastLogin = data.lastLogin || "";
+
+  if (lastLogin !== today) {
+    // New day
+    streak = (new Date(lastLogin).toDateString() === new Date(Date.now() - 86400000).toDateString()) 
+      ? streak + 1 : 1;
+    reward = 200 * streak;
+
+    await updateDoc(userRef, {
+      balance: (data.balance || 0) + reward,
+      lastLogin: today,
+      streak
+    });
+
+    data.balance = (data.balance || 0) + reward;
+    data.streak = streak;
+
+    // Show daily reward popup after 5 sec
+    setTimeout(() => {
+      showRewardPopup(reward, streak);
+    }, 5000);
+  }
+}
 
     // Show balance
 if (data.balance !== undefined) {
